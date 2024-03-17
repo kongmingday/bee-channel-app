@@ -1,0 +1,195 @@
+import { FlashList } from '@shopify/flash-list';
+import { MaterialIcon, Text, TransparentView, View } from './Themed';
+import { Feather } from '@expo/vector-icons';
+import 'react-native-gesture-handler';
+import 'react-native-reanimated';
+import { MotiView } from 'moti';
+import { Image } from 'expo-image';
+import { useState, useRef, useEffect } from 'react';
+import { Pressable } from 'react-native';
+import clsx from 'clsx';
+import { BlurView } from 'expo-blur';
+import { buttonColor } from '@/constants/Colors';
+import { PageParams } from '@/.expo/types';
+import { getHistoryVideoPage, getWatchLaterVideoPage } from '@/api/media';
+import { SimpleMedia, Video } from '@/.expo/types/media';
+import { PATH_CONSTANTS } from '@/.expo/types/constant';
+import { UserAreaType } from '@/.expo/types/enum';
+import { FetchDataPageReturn, useFetchDataPage } from '@/store/hook';
+
+const UserTabRenderItem = ({
+  item,
+  index,
+}: {
+  item: SimpleMedia;
+  index: number;
+}) => {
+  return (
+    <BlurView
+      className='flex-1 px-2 py-2 overflow-hidden rounded-lg mx-1'
+      style={{
+        rowGap: 10,
+      }}>
+      <Image
+        className='w-full h-[100] rounded-lg'
+        source={`${PATH_CONSTANTS}${item.coverPath}`}
+      />
+      <TransparentView className='mx-1 gap-y-1'>
+        <Text
+          numberOfLines={2}
+          className='mx-1'
+          isTitle>
+          {item.title}
+        </Text>
+        <TransparentView className='flex-row items-center gap-x-2'>
+          <Feather
+            name='user'
+            size={18}
+          />
+          <Text>{item.author.username}</Text>
+        </TransparentView>
+      </TransparentView>
+    </BlurView>
+  );
+};
+
+export const VerticalVideoList = (props: {
+  fetchFunc: FetchDataPageReturn<any>;
+  column?: number;
+}) => {
+  const { fetchFunc, column } = props;
+  return (
+    <>
+      <FlashList
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        data={fetchFunc.data}
+        extraData={fetchFunc.data}
+        estimatedItemSize={175}
+        numColumns={column || 2}
+        keyExtractor={(item) => {
+          return item.id;
+        }}
+        refreshing={fetchFunc.isRefreshing}
+        onRefresh={() => {
+          fetchFunc.refreshPage();
+        }}
+        onEndReached={() => {
+          fetchFunc.fetchData();
+        }}
+        ListHeaderComponent={<TransparentView className='h-2' />}
+        ListFooterComponent={<TransparentView className='h-4' />}
+        renderItem={({ item, index }) => {
+          return (
+            <UserTabRenderItem
+              key={item.id}
+              item={item}
+              index={index}
+            />
+          );
+        }}
+        ItemSeparatorComponent={() => {
+          return <TransparentView className='h-2' />;
+        }}
+      />
+    </>
+  );
+};
+
+export const SelectionArea = () => {
+  const actionArea = [
+    {
+      name: 'Collection',
+      icons: <MaterialIcon name='star-border' />,
+      fetchData: getWatchLaterVideoPage,
+    },
+    {
+      name: 'Watch Later',
+      icons: <MaterialIcon name='access-time' />,
+      fetchData: getWatchLaterVideoPage,
+    },
+    {
+      name: 'History',
+      icons: <MaterialIcon name='history' />,
+      fetchData: getHistoryVideoPage,
+    },
+  ];
+  const [selectKey, setSelectKey] = useState<number>(0);
+  const motiRef = useRef<any>(null);
+
+  const processData = (data: any) => {
+    return data.map((item: any) => item.video);
+  };
+
+  const { setFetchFunction, setProcessState, ...other } = useFetchDataPage<any>(
+    actionArea[selectKey].fetchData,
+    processData,
+  );
+
+  useEffect(() => {
+    if (selectKey === 2) {
+      setProcessState(true);
+    } else {
+      setProcessState(false);
+    }
+    setFetchFunction(() => actionArea[selectKey].fetchData);
+  }, [selectKey]);
+
+  return (
+    <TransparentView className='flex-1 w-full mt-3'>
+      <BlurView
+        className='flex-row rounded-full mx-6 py-3 overflow-hidden '
+        intensity={80}>
+        <MotiView
+          ref={motiRef}
+          from={{ translateX: 0 }}
+          animate={{ translateX: motiRef?.current * selectKey }}
+          transition={{ type: 'timing', duration: 200 }}
+          onLayout={(event) => {
+            motiRef.current = event.nativeEvent.layout.width;
+          }}
+          className='w-1/3 absolute h-10 rounded-full'
+          style={{
+            backgroundColor: buttonColor,
+          }}
+        />
+        {actionArea.map((item, index) => (
+          <Pressable
+            key={item.name}
+            className='flex-1 items-center bg-transparent'
+            onPress={() => {
+              setSelectKey(index);
+            }}>
+            <Text
+              className={clsx('text-xs ', {
+                'text-white': selectKey === index,
+              })}>
+              {item.name}
+            </Text>
+          </Pressable>
+        ))}
+      </BlurView>
+      <VerticalVideoList
+        fetchFunc={{ setFetchFunction, setProcessState, ...other }}
+      />
+    </TransparentView>
+  );
+};
+
+export const UserTabActionArea = () => {
+  return (
+    <TransparentView
+      className='flex-row justify-around'
+      style={{ gap: 20 }}>
+      {[0, 1, 2].map((item) => (
+        <BlurView
+          key={item}
+          className='px-5 items-center rounded-lg overflow-hidden py-1'
+          intensity={80}>
+          <Text className='text-lg'>14</Text>
+          <Text className=' text-lg text-gray-400'>videos</Text>
+        </BlurView>
+      ))}
+    </TransparentView>
+  );
+};

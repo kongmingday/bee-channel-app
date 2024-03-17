@@ -1,31 +1,27 @@
-import { StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient'
+import { SearchBar, Tab, TabView, Avatar } from '@rneui/themed'
+import { useState } from 'react'
+import {
+  MaterialIcon,
+  TransparentView,
+  FontistoIcon
+} from '@/components/Themed'
+import { HomeHeader, HomeSelectTab } from '@/components/HomeScreen'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
-
-export default function TabOneScreen() {
+export default function HomeScreen() {
+  const tarBarHeight = useBottomTabBarHeight()
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
-  );
+    <LinearGradient
+      colors={['#e9defa', '#ace0f9']}
+      className='flex-1'
+      style={{
+        paddingBottom: tarBarHeight
+      }}
+    >
+      <HomeHeader />
+      <HomeSelectTab />
+    </LinearGradient>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
