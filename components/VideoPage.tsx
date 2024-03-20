@@ -21,8 +21,9 @@ import { SimpleVideoList } from './VideoAssembly';
 import { Comment, SimpleMedia } from '@/.expo/types/media';
 import { PATH_CONSTANTS } from '@/.expo/types/constant';
 import { calculateDuration, convertNumber } from '@/utils/common/calculateUtil';
-import { useFetchDataPage } from '@/store/hook';
-import { getCommentPage } from '@/api/media';
+import { useAppSelector, useFetchDataPage } from '@/store/hook';
+import { commitComment, getCommentPage } from '@/api/media';
+import { DeriveType, OrderType } from '@/.expo/types/enum';
 
 export const VideoPageDetail = (props: { videoInfo?: SimpleMedia }) => {
   const [isOpen, setOpenState] = useState(false);
@@ -51,12 +52,9 @@ export const VideoPageDetail = (props: { videoInfo?: SimpleMedia }) => {
             className='text-base'
             numberOfLines={1}
             style={{
-              maxWidth: '50%',
+              maxWidth: 200,
             }}>
             {`${videoInfo?.author.username}`}
-          </Text>
-          <Text>
-            {convertNumber(videoInfo?.author.subscribeCount?.toString())}
           </Text>
         </TransparentView>
         <BaseBlurButton
@@ -135,13 +133,8 @@ export const VideoPageDetail = (props: { videoInfo?: SimpleMedia }) => {
   );
 };
 
-export const CommentRenderItem = ({
-  item,
-  index,
-}: {
-  item: any;
-  index: number;
-}) => {
+export const CommentRenderItem = (props: { item: Comment; index: number }) => {
+  const { item } = props;
   const [isOpen, setOpenState] = useState(false);
 
   return (
@@ -163,8 +156,8 @@ export const CommentRenderItem = ({
           }}
         />
         <TransparentView>
-          <Text>Name</Text>
-          <Text>Time</Text>
+          <Text>{item.fromUser.username}</Text>
+          <Text>{calculateDuration(item.createTime)}</Text>
         </TransparentView>
       </TransparentView>
       <TransparentView
@@ -190,11 +183,7 @@ export const CommentRenderItem = ({
                   exit={{
                     opacity: 0,
                   }}>
-                  <Text>
-                    Somethiesssssssssssssssssssssssssssssssssssssssssssss,
-                    Somethiesssssssssssssssssssssssssssssssssssssssssssss
-                    Somethiesssssssssssssssssssssssssssssssssssssssssssss
-                  </Text>
+                  <Text>{item.content}</Text>
                 </MotiView>
               )}
               {!isOpen && (
@@ -209,11 +198,7 @@ export const CommentRenderItem = ({
                   exit={{
                     opacity: 0,
                   }}>
-                  <Text numberOfLines={2}>
-                    Somethiesssssssssssssssssssssssssssssssssssssssssssss,
-                    Somethiesssssssssssssssssssssssssssssssssssssssssssss
-                    Somethiesssssssssssssssssssssssssssssssssssssssssssss
-                  </Text>
+                  <Text numberOfLines={2}>{item.content}</Text>
                 </MotiView>
               )}
             </AnimatePresence>
@@ -237,33 +222,57 @@ export const CommentRenderItem = ({
             size={20}
           />
         </TransparentView>
-        <BlurView
-          intensity={70}
-          className='px-4 py-2 overflow-hidden'
-          style={{
-            rowGap: 10,
-          }}>
-          <Text numberOfLines={2}>Name: Value</Text>
-          <Text numberOfLines={2}>Name: Value</Text>
-          <TransparentView className='flex-row items-center'>
-            <Text>More replies</Text>
-            <MaterialIcon
-              name='chevron-right'
-              size={20}
-            />
-          </TransparentView>
-        </BlurView>
+        {item.children && (
+          <BlurView
+            intensity={70}
+            className='px-4 py-2 overflow-hidden'
+            style={{
+              rowGap: 10,
+            }}>
+            {item.children.map((item) => (
+              <Text numberOfLines={2}>Name: Value</Text>
+            ))}
+            <TransparentView className='flex-row items-center'>
+              <Text>More replies</Text>
+              <MaterialIcon
+                name='chevron-right'
+                size={20}
+              />
+            </TransparentView>
+          </BlurView>
+        )}
       </TransparentView>
     </BlurView>
   );
 };
 
 export const VideoPageComment = (props: { videoId: string }) => {
+  const deriveId = useAppSelector((state) => state.chat.deriveId);
+  const [input, setInput] = useState<string>('');
+
   const { data, isRefreshing, fetchData, refreshPage } = useFetchDataPage<
     Comment,
     any,
     any
-  >(getCommentPage);
+  >(getCommentPage, undefined, undefined, {
+    videoId: deriveId,
+    orderBy: OrderType.HOT,
+  });
+
+  const handleCommit = async () => {
+    if (input.length <= 0) {
+      return;
+    }
+    await commitComment({
+      deriveId,
+      deriveType: DeriveType.VIDEO,
+      content: input,
+    }).then((res) => {
+      if (res.result) {
+        refreshPage();
+      }
+    });
+  };
 
   return (
     <TransparentView
@@ -288,6 +297,9 @@ export const VideoPageComment = (props: { videoId: string }) => {
         data={data}
         extraData={data}
         estimatedItemSize={175}
+        onEndReached={fetchData}
+        refreshing={isRefreshing}
+        onRefresh={refreshPage}
         keyExtractor={(item: Comment) => {
           return item.id;
         }}
@@ -308,13 +320,30 @@ export const VideoPageComment = (props: { videoId: string }) => {
           return <TransparentView className='h-4' />;
         }}
       />
-      <TextInput
-        className='w-full px-4 py-2 rounded-full'
-        placeholder='Aha'
+      <TransparentView
+        className='w-full flex-row items-center'
         style={{
-          backgroundColor: secondBgColor,
-        }}
-      />
+          columnGap: 10,
+        }}>
+        <TextInput
+          className='flex-1 px-4 py-2 rounded-full'
+          placeholder='Aha'
+          style={{
+            backgroundColor: secondBgColor,
+          }}
+          value={input}
+          onChangeText={setInput}
+        />
+        <BaseBlurButton
+          containerStyle={{
+            width: 80,
+          }}
+          title='Commit'
+          onPress={() => {
+            handleCommit();
+          }}
+        />
+      </TransparentView>
     </TransparentView>
   );
 };

@@ -9,13 +9,14 @@ import { Avatar } from '@rneui/themed';
 import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import { getSubscriptionVideoList } from '@/api/media';
-import { useFetchDataPage } from '@/store/hook';
+import { useAppDispatch, useFetchDataPage } from '@/store/hook';
 import { Video } from '@/.expo/types/media';
 import { PATH_CONSTANTS } from '@/.expo/types/constant';
 import { calculateDuration, convertNumber } from '@/utils/common/calculateUtil';
 import { getSubscription } from '@/api/user';
 import { UserInfo } from '@/.expo/types/auth';
 import { FlatList } from 'react-native';
+import { changeDeriveId } from '@/store/slices/chatSlice';
 
 export const SubscriptionAuthorList = () => {
   const { data, isRefreshing, fetchData, refreshPage } =
@@ -80,17 +81,18 @@ export const SubscriptionAuthorList = () => {
   );
 };
 
-export const SubscriptionTabRenderItem = ({
-  item,
-  index,
-}: {
+export const SubscriptionTabRenderItem = (props: {
   item: Video;
   index: number;
 }) => {
+  const { item } = props;
+  const dispatch = useAppDispatch();
+
   return (
     <Pressable
       key={item.id}
       onPress={() => {
+        dispatch(changeDeriveId(item.id));
         router.push(`/(no-direct)/video-play/${item.id}`);
       }}
       className='mb-2'>
@@ -154,7 +156,14 @@ export const SubscriptionVideoList = () => {
         }}
         ListHeaderComponent={<TransparentView className='h-2' />}
         ListFooterComponent={<TransparentView className='h-4' />}
-        renderItem={SubscriptionTabRenderItem}
+        renderItem={({ item, index }) => {
+          return (
+            <SubscriptionTabRenderItem
+              item={item}
+              index={index}
+            />
+          );
+        }}
       />
     </TransparentView>
   );

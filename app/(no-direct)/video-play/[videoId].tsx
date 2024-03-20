@@ -17,6 +17,7 @@ import { SimpleMedia } from '@/.expo/types/media';
 
 export default function VideoPlayScreen() {
   const { videoId } = useLocalSearchParams();
+
   const [inFullscreen, setInFullscreen] = useState(false);
   const [index, setIndex] = useState(0);
   const videoRef = useRef<Video>(new Video({}));

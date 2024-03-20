@@ -53,6 +53,7 @@ export const request = async (
 
   const result = fetch(url, options)
     .then((response) => {
+      console.log(response.status);
       if (response.status === 401) {
         throw new AuthenticationError(
           'The account is incorrect or the access is expired',
