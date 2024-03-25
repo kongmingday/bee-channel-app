@@ -5,6 +5,7 @@ export interface ChatState {
   parentId: string;
   userToId: string;
   deriveId: string;
+  commentId: string;
 }
 
 // Define the initial state using that type
@@ -12,6 +13,7 @@ const initialState: ChatState = {
   parentId: '',
   userToId: '',
   deriveId: '',
+  commentId: ''
 };
 
 export const chatSlice = createSlice({

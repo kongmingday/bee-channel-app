@@ -16,6 +16,7 @@ import { useCallback, useState } from 'react';
 import { getUserInfo } from '@/api/user';
 import { UserInfo } from '@/.expo/types/auth';
 import { PATH_CONSTANTS } from '@/.expo/types/constant';
+import { useWindowDimensions } from 'react-native';
 
 const UserInfoScreen = () => {
   const tabBarHeight = useBottomTabBarHeight();
@@ -100,6 +101,7 @@ const UserLoginScreen = () => {
 };
 
 export default function UserScreen() {
+  const { width, height } = useWindowDimensions();
   const [authToken, setAuthToken] = useState('1');
 
   useFocusEffect(() => {
@@ -110,5 +112,13 @@ export default function UserScreen() {
     authToken();
   });
 
-  return <>{authToken ? <UserInfoScreen /> : <UserLoginScreen />}</>;
+  return (
+    <TransparentView
+      style={{
+        width,
+        height: height,
+      }}>
+      {authToken ? <UserInfoScreen /> : <UserLoginScreen />}
+    </TransparentView>
+  );
 }

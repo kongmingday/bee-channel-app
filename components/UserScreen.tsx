@@ -6,7 +6,7 @@ import 'react-native-reanimated';
 import { MotiView } from 'moti';
 import { Image } from 'expo-image';
 import { useState, useRef, useEffect } from 'react';
-import { Pressable } from 'react-native';
+import { FlatList, Pressable } from 'react-native';
 import clsx from 'clsx';
 import { BlurView } from 'expo-blur';
 import { buttonColor } from '@/constants/Colors';
@@ -15,61 +15,73 @@ import { getHistoryVideoPage, getWatchLaterVideoPage } from '@/api/media';
 import { SimpleMedia, Video } from '@/.expo/types/media';
 import { PATH_CONSTANTS } from '@/.expo/types/constant';
 import { UserAreaType } from '@/.expo/types/enum';
-import { FetchDataPageReturn, useFetchDataPage } from '@/store/hook';
+import {
+  FetchDataPageReturn,
+  useAppDispatch,
+  useFetchDataPage,
+} from '@/store/hook';
+import { router } from 'expo-router';
+import { changeDeriveId } from '@/store/slices/chatSlice';
 
-const UserTabRenderItem = ({
-  item,
-  index,
-}: {
-  item: SimpleMedia;
-  index: number;
-}) => {
+const UserTabRenderItem = (props: { item: SimpleMedia; index: number }) => {
+  const { item, index } = props;
+
+  const dispatch = useAppDispatch();
+
   return (
-    <BlurView
-      className='flex-1 px-2 py-2 overflow-hidden rounded-lg mx-1'
-      style={{
-        rowGap: 10,
+    <Pressable
+      key={item.id}
+      className='flex-1'
+      onPress={() => {
+        dispatch(changeDeriveId(item.id));
+        router.push(`/(no-direct)/video-play/${item.id}`);
       }}>
-      <Image
-        className='w-full h-[100] rounded-lg'
-        source={`${PATH_CONSTANTS}${item.coverPath}`}
-      />
-      <TransparentView className='mx-1 gap-y-1'>
-        <Text
-          numberOfLines={2}
-          className='mx-1'
-          isTitle>
-          {item.title}
-        </Text>
-        <TransparentView className='flex-row items-center gap-x-2'>
-          <Feather
-            name='user'
-            size={18}
-          />
-          <Text>{item.author.username}</Text>
+      <BlurView
+        className='px-2 py-2 mx-1 overflow-hidden rounded-lg '
+        style={{
+          rowGap: 10,
+        }}>
+        <Image
+          className='w-full h-[100] rounded-lg'
+          source={`${PATH_CONSTANTS}${item.coverPath}`}
+        />
+        <TransparentView className='mx-1 gap-y-1'>
+          <Text
+            numberOfLines={2}
+            className='mx-1'
+            isTitle>
+            {item.title}
+          </Text>
+          <TransparentView className='flex-row items-center gap-x-2'>
+            <Feather
+              name='user'
+              size={18}
+            />
+            <Text>{item.author.username}</Text>
+          </TransparentView>
         </TransparentView>
-      </TransparentView>
-    </BlurView>
+      </BlurView>
+    </Pressable>
   );
 };
 
 export const VerticalVideoList = (props: {
-  fetchFunc: FetchDataPageReturn<any>;
+  fetchFunc: FetchDataPageReturn<any, any>;
   column?: number;
 }) => {
   const { fetchFunc, column } = props;
+
   return (
     <>
       <FlashList
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         data={fetchFunc.data}
-        extraData={fetchFunc.data}
-        estimatedItemSize={175}
         numColumns={column || 2}
-        keyExtractor={(item) => {
-          return item.id;
+        keyExtractor={(item, index) => {
+          return index + '-' + item.id;
         }}
+        estimatedItemSize={220}
         refreshing={fetchFunc.isRefreshing}
         onRefresh={() => {
           fetchFunc.refreshPage();
@@ -122,7 +134,9 @@ export const SelectionArea = () => {
   };
 
   const { setFetchFunction, setProcessState, ...other } = useFetchDataPage<any>(
-    actionArea[selectKey].fetchData,
+    () => {
+      actionArea[selectKey].fetchData;
+    },
     processData,
   );
 

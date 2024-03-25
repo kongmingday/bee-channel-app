@@ -83,10 +83,14 @@ export function TransparentView(props: ViewProps) {
   );
 }
 
+export type MaterialIconType = React.ComponentProps<
+  typeof MaterialIcons
+>['name'];
+
 export function MaterialIcon(
   props: ViewProps & {
     size?: number;
-    name: React.ComponentProps<typeof MaterialIcons>['name'];
+    name: MaterialIconType;
     color?: string | OpaqueColorValue;
     ignore?: boolean;
   },
@@ -189,14 +193,14 @@ export function IonIcon(
   );
 }
 
-export function FeatherIcon(
+export const FeatherIcon = (
   props: ViewProps & {
     size?: number;
     name: React.ComponentProps<typeof Feather>['name'];
     color?: string | OpaqueColorValue;
     ignore?: boolean;
   },
-) {
+) => {
   const { lightColor, darkColor, size, color, ignore, ...otherProps } = props;
   const tint = useThemeColor({ light: lightColor, dark: darkColor }, 'tint');
 
@@ -207,7 +211,7 @@ export function FeatherIcon(
       {...otherProps}
     />
   );
-}
+};
 
 export const PressableIcon = (
   props: ViewProps & {

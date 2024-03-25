@@ -14,6 +14,8 @@ import { secondaryColor, ignoreTextColor } from '@/constants/Colors';
 import { PATH_CONSTANTS } from '@/.expo/types/constant';
 import { getVideoInfo } from '@/api/media';
 import { SimpleMedia } from '@/.expo/types/media';
+import { ExtendModal } from '@/components/ExtendModel';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 export default function VideoPlayScreen() {
   const { videoId } = useLocalSearchParams();
@@ -22,6 +24,7 @@ export default function VideoPlayScreen() {
   const [index, setIndex] = useState(0);
   const videoRef = useRef<Video>(new Video({}));
   const [videoInfo, setVideoInfo] = useState<SimpleMedia>();
+  const modalRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
     const fetchVideoInfo = async () => {
@@ -119,9 +122,12 @@ export default function VideoPlayScreen() {
           <VideoPageDetail videoInfo={videoInfo} />
         </TabView.Item>
         <TabView.Item className='flex-1'>
-          <VideoPageComment videoId={videoId as string} />
+          <VideoPageComment modalRef={modalRef} />
         </TabView.Item>
       </TabView>
+      <ExtendModal ref={modalRef}>
+        <VideoPageComment isChildren />
+      </ExtendModal>
     </LinearGradient>
   );
 }
