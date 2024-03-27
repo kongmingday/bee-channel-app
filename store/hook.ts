@@ -15,10 +15,13 @@ export type FetchDataPageReturn<T, P> = {
   isLoading: boolean;
   isRefreshing: boolean;
   isNoMore: boolean;
+  dataTotal: number;
+  otherParams: P | undefined;
   setRefreshState: Dispatch<SetStateAction<boolean>>;
   setPageParams: Dispatch<SetStateAction<PageParams>>;
   setFetchFunction: Dispatch<SetStateAction<FetchFunctionType<P>>>;
   setProcessState: Dispatch<SetStateAction<boolean>>;
+  setOtherParams: Dispatch<SetStateAction<P | undefined>>;
   fetchData: () => Promise<any>;
   refreshPage: () => Promise<any>;
 };
@@ -34,6 +37,7 @@ export const useFetchDataPage = <T, R = any, P = any>(
   const [isLoading, setLoadState] = useState<boolean>(false);
   const [isRefreshing, setRefreshState] = useState<boolean>(false);
   const [enableProcess, setProcessState] = useState<boolean>(false);
+  const [params, setParams] = useState<P | undefined>(otherParams);
   const [fetchTemplate, setFetchTemplate] = useState<FetchFunctionType<P>>(
     () => fetchFunction,
   );
@@ -54,7 +58,7 @@ export const useFetchDataPage = <T, R = any, P = any>(
     await fetchTemplate({
       ...pageParams,
       pageNo: pageParams.pageNo + 1,
-      ...otherParams,
+      ...params,
     })
       .then((response: any) => {
         let {
@@ -77,9 +81,11 @@ export const useFetchDataPage = <T, R = any, P = any>(
 
   const refreshPage = async () => {
     setRefreshState(true);
+    setData([]);
+    setTotal(0);
     setNoMoreState(false);
     setLoadState(true);
-    await fetchTemplate({ ...pageParams, pageNo: 1, ...otherParams })
+    await fetchTemplate({ ...pageParams, pageNo: 1, ...params })
       .then((response: any) => {
         let {
           result: { data, total },
@@ -101,20 +107,23 @@ export const useFetchDataPage = <T, R = any, P = any>(
   };
 
   useEffect(() => {
-    if (processData) {
+    if (dataTotal > 0) {
       refreshPage();
     }
-  }, [fetchTemplate]);
+  }, [fetchTemplate, params]);
 
   return {
     data,
     isLoading,
     isRefreshing,
     isNoMore,
+    dataTotal,
+    otherParams: params,
     setRefreshState,
     setPageParams,
     setFetchFunction: setFetchTemplate,
     setProcessState,
+    setOtherParams: setParams,
     fetchData,
     refreshPage,
   };

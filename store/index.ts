@@ -3,6 +3,10 @@ import AppReducer from './slices/appSlice';
 import ChatReducer from './slices/chatSlice';
 
 export const store = configureStore({
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
   reducer: {
     app: AppReducer,
     chat: ChatReducer,

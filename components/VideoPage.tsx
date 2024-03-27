@@ -13,13 +13,13 @@ import 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { AnimatePresence, MotiView } from 'moti';
 import {
-  Dispatch,
-  SetStateAction,
   useEffect,
   useRef,
   useState,
   memo,
   RefObject,
+  Dispatch,
+  SetStateAction,
 } from 'react';
 import { Pressable, TextInput } from 'react-native';
 import { Avatar } from '@rneui/themed';
@@ -31,17 +31,63 @@ import { Comment, SimpleMedia } from '@/.expo/types/media';
 import { PATH_CONSTANTS } from '@/.expo/types/constant';
 import { calculateDuration, convertNumber } from '@/utils/common/calculateUtil';
 import { useAppDispatch, useAppSelector, useFetchDataPage } from '@/store/hook';
-import { commitComment, getCommentPage } from '@/api/media';
-import { DeriveType, OrderType } from '@/.expo/types/enum';
-import { changeDeriveId } from '@/store/slices/chatSlice';
-import { router } from 'expo-router';
-import { ExtendModal } from './ExtendModel';
+import {
+  commitComment,
+  getCommentPage,
+  getChildrenComment,
+  favoriteAction,
+} from '@/api/media';
+import { DeriveType, FavoriteType } from '@/.expo/types/enum';
+import {
+  changeMainInputRef,
+  changeParentId,
+  changeSecondaryInputRef,
+  changeUserToId,
+} from '@/store/slices/chatSlice';
 import { BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { LoadingComponent, NoMoreDataComponent } from './FlatListComponent';
+import { useDispatch } from 'react-redux';
+import { Link } from 'expo-router';
+import { subscribeAction } from '@/api/user';
+import { favoriteDataPackaging } from '@/utils/common/calculateUtil';
 
-export const VideoPageDetail = (props: { videoInfo?: SimpleMedia }) => {
+export const VideoPageDetail = (props: {
+  videoInfo?: SimpleMedia;
+  setVideoInfo: Dispatch<SetStateAction<SimpleMedia | undefined>>;
+}) => {
   const [isOpen, setOpenState] = useState(false);
-  const { videoInfo } = props;
+  const { videoInfo, setVideoInfo } = props;
+
+  const handleSubscribeChange = () => {
+    videoInfo &&
+      subscribeAction(videoInfo?.authorId).then((response) => {
+        if (response.result) {
+          setVideoInfo({
+            ...videoInfo,
+            author: {
+              ...videoInfo.author,
+              hasConcern: !videoInfo.author.hasConcern,
+            },
+          });
+        }
+      });
+  };
+
+  const handleFavoriteChange = (favoriteType: FavoriteType) => {
+    favoriteAction({
+      sourceId: videoInfo?.id!,
+      deriveType: DeriveType.VIDEO,
+      favoriteType,
+      userToId: videoInfo?.authorId,
+    }).then((response) => {
+      if (response.result) {
+        setVideoInfo((pre) => {
+          const changeResult = favoriteDataPackaging(pre, favoriteType);
+          return { ...changeResult };
+        });
+      }
+    });
+  };
 
   return (
     <TransparentView
@@ -78,7 +124,7 @@ export const VideoPageDetail = (props: { videoInfo?: SimpleMedia }) => {
           title={`${
             videoInfo?.author.hasConcern ? 'Unsubscribe' : 'Subscribe'
           }`}
-          onPress={() => {}}
+          onPress={handleSubscribeChange}
         />
       </TransparentView>
       <TransparentView className='px-2'>
@@ -86,7 +132,7 @@ export const VideoPageDetail = (props: { videoInfo?: SimpleMedia }) => {
           <TransparentView>
             <Text className='text-xl'>{videoInfo?.title}</Text>
             <Text>
-              {`${convertNumber(videoInfo?.clickedCount)}`} ·{' '}
+              {`${convertNumber(videoInfo?.clickedCount)} views`} ·{' '}
               {`${calculateDuration(videoInfo?.publicTime)}`}
             </Text>
           </TransparentView>
@@ -124,15 +170,31 @@ export const VideoPageDetail = (props: { videoInfo?: SimpleMedia }) => {
           containerStyle={{
             backgroundColor: 'transparent',
           }}
-          onPress={() => {}}>
-          <MaterialIcon name='thumb-up-off-alt' />
+          onPress={() => {
+            handleFavoriteChange(FavoriteType.LIKE);
+          }}>
+          <MaterialIcon
+            name={
+              videoInfo?.favoriteType === FavoriteType.LIKE
+                ? 'thumb-up-alt'
+                : 'thumb-up-off-alt'
+            }
+          />
         </BaseButton>
         <BaseButton
           containerStyle={{
             backgroundColor: 'transparent',
           }}
-          onPress={() => {}}>
-          <MaterialIcon name='thumb-down-off-alt' />
+          onPress={() => {
+            handleFavoriteChange(FavoriteType.UNLIKE);
+          }}>
+          <MaterialIcon
+            name={
+              videoInfo?.favoriteType === FavoriteType.UNLIKE
+                ? 'thumb-down-alt'
+                : 'thumb-down-off-alt'
+            }
+          />
         </BaseButton>
         <BaseButton
           containerStyle={{
@@ -155,6 +217,12 @@ export const CommentRenderItem = memo(
     openModal?: () => void;
   }) => {
     const { item, isChildren, openModal } = props;
+
+    const mainInputRef = useAppSelector((state) => state.chat.mainInputRef);
+    const secondaryInputRef = useAppSelector(
+      (state) => state.chat.secondaryInputRef,
+    );
+    const dispatch = useDispatch();
     const [isOpen, setOpenState] = useState(false);
 
     const buttonAction: {
@@ -171,7 +239,15 @@ export const CommentRenderItem = memo(
       },
       {
         name: 'chat-bubble-outline',
-        onClick: () => {},
+        onClick: () => {
+          if (isChildren) {
+            dispatch(changeUserToId(item.userFromId));
+            secondaryInputRef?.current?.focus();
+            return;
+          }
+          dispatch(changeParentId(item.id));
+          mainInputRef?.current?.focus();
+        },
       },
     ];
 
@@ -221,7 +297,12 @@ export const CommentRenderItem = memo(
                     exit={{
                       opacity: 0,
                     }}>
-                    <Text>{item.content}</Text>
+                    <Text>
+                      {isChildren && item.toUser && (
+                        <Link href='/user'>{`@${item.toUser.username} : `}</Link>
+                      )}
+                      {item.content}
+                    </Text>
                   </MotiView>
                 )}
                 {!isOpen && (
@@ -236,7 +317,12 @@ export const CommentRenderItem = memo(
                     exit={{
                       opacity: 0,
                     }}>
-                    <Text numberOfLines={2}>{item.content}</Text>
+                    <Text numberOfLines={2}>
+                      {isChildren && item.toUser && (
+                        <Link href='/user'>{`@${item.toUser.username} : `}</Link>
+                      )}
+                      {item.content}
+                    </Text>
                   </MotiView>
                 )}
               </AnimatePresence>
@@ -267,6 +353,7 @@ export const CommentRenderItem = memo(
                 <Pressable
                   className='flex-row items-center'
                   onPress={() => {
+                    dispatch(changeParentId(item.id));
                     openModal && openModal();
                   }}>
                   <Text>More replies</Text>
@@ -291,15 +378,43 @@ export const VideoPageComment = (props: {
 }) => {
   const { modalRef, isChildren } = props;
   const deriveId = useAppSelector((state) => state.chat.deriveId);
+  const userToId = useAppSelector((state) => state.chat.userToId);
+  const parentId = useAppSelector((state) => state.chat.parentId);
+  const dispatch = useAppDispatch();
 
+  const inputRef = useRef<TextInput>(null);
   const [input, setInput] = useState<string>('');
-  // const modalRef = useRef<BottomSheetModal>(null);
+  const [sortedIndex, setSortedIndex] = useState<number>(0);
+  const sortedArray = ['Most', 'Newest'];
 
-  const { data, isRefreshing, isLoading, isNoMore, fetchData, refreshPage } =
-    useFetchDataPage<Comment, any, any>(getCommentPage, undefined, undefined, {
-      videoId: deriveId,
-      orderBy: OrderType.HOT,
-    });
+  const {
+    data,
+    isRefreshing,
+    isLoading,
+    isNoMore,
+    dataTotal,
+    otherParams,
+    fetchData,
+    refreshPage,
+    setOtherParams,
+  } = isChildren
+    ? useFetchDataPage<Comment, any, any>(
+        getChildrenComment,
+        undefined,
+        undefined,
+        {
+          parentId,
+        },
+      )
+    : useFetchDataPage<Comment, any, any>(
+        getCommentPage,
+        undefined,
+        undefined,
+        {
+          videoId: deriveId,
+          orderBy: sortedIndex,
+        },
+      );
 
   const handleCommit = async () => {
     if (input.length <= 0) {
@@ -309,12 +424,38 @@ export const VideoPageComment = (props: {
       deriveId,
       deriveType: DeriveType.VIDEO,
       content: input,
+      userToId: userToId,
+      parentId: parentId,
     }).then((res) => {
       if (res.result) {
         refreshPage();
+        inputRef.current?.clear();
       }
     });
   };
+
+  const handleSortedChange = () => {
+    if (sortedIndex) {
+      setSortedIndex(0);
+    } else {
+      setSortedIndex(1);
+    }
+  };
+
+  useEffect(() => {
+    if (isChildren) {
+      dispatch(changeSecondaryInputRef(inputRef));
+      return;
+    }
+    dispatch(changeMainInputRef(inputRef));
+  }, []);
+
+  useEffect(() => {
+    setOtherParams({
+      ...otherParams,
+      orderBy: sortedIndex,
+    });
+  }, [sortedIndex]);
 
   return (
     <TransparentView
@@ -322,17 +463,20 @@ export const VideoPageComment = (props: {
       style={{
         rowGap: 10,
       }}>
-      <Pressable
-        className='flex-row items-center '
-        style={{
-          columnGap: 5,
-        }}>
-        <Feather
-          name='menu'
-          size={20}
-        />
-        <Text className='text-base'>Newest</Text>
-      </Pressable>
+      {!isChildren && (
+        <Pressable
+          className='flex-row items-center '
+          style={{
+            columnGap: 5,
+          }}
+          onPress={handleSortedChange}>
+          <Feather
+            name='menu'
+            size={20}
+          />
+          <Text className='text-base'>{sortedArray[sortedIndex]}</Text>
+        </Pressable>
+      )}
       {isChildren ? (
         <BottomSheetFlatList
           showsHorizontalScrollIndicator={false}
@@ -345,6 +489,19 @@ export const VideoPageComment = (props: {
           onRefresh={refreshPage}
           keyExtractor={(item: Comment, index) => {
             return index + item.id;
+          }}
+          renderItem={({ item, index }) => {
+            return (
+              <CommentRenderItem
+                key={index + '-' + item.id}
+                isChildren={isChildren || false}
+                item={item}
+                index={index}
+                openModal={() => {
+                  modalRef?.current?.present();
+                }}
+              />
+            );
           }}
           ListEmptyComponent={
             isNoMore ? (
@@ -362,19 +519,6 @@ export const VideoPageComment = (props: {
               <TransparentView className='p-1' />
             )
           }
-          renderItem={({ item, index }) => {
-            return (
-              <CommentRenderItem
-                key={index + '-' + item.id}
-                isChildren={isChildren || false}
-                item={item}
-                index={index}
-                openModal={() => {
-                  modalRef?.current?.present();
-                }}
-              />
-            );
-          }}
           ItemSeparatorComponent={() => {
             return <TransparentView className='h-4' />;
           }}
@@ -392,11 +536,6 @@ export const VideoPageComment = (props: {
           keyExtractor={(item: Comment, index) => {
             return index + item.id;
           }}
-          ListEmptyComponent={
-            <TransparentView className='items-center'>
-              <Text className='text-base'>😔 No More Data</Text>
-            </TransparentView>
-          }
           renderItem={({ item, index }) => {
             return (
               <CommentRenderItem
@@ -410,6 +549,22 @@ export const VideoPageComment = (props: {
               />
             );
           }}
+          ListEmptyComponent={
+            isNoMore && dataTotal > 0 ? (
+              <NoMoreDataComponent />
+            ) : (
+              <TransparentView className='p-1' />
+            )
+          }
+          ListFooterComponent={
+            isNoMore ? (
+              <NoMoreDataComponent />
+            ) : isLoading ? (
+              <LoadingComponent />
+            ) : (
+              <TransparentView className='p-1' />
+            )
+          }
           ItemSeparatorComponent={() => {
             return <TransparentView className='h-4' />;
           }}
@@ -423,6 +578,7 @@ export const VideoPageComment = (props: {
         <TextInput
           className='flex-1 px-4 py-2 rounded-full'
           placeholder='Aha'
+          ref={inputRef}
           style={{
             backgroundColor: secondBgColor,
           }}
@@ -439,12 +595,6 @@ export const VideoPageComment = (props: {
           }}
         />
       </TransparentView>
-
-      {/* {!isChildren && (
-        <ExtendModal ref={modalRef}>
-          <VideoPageComment isChildren />
-        </ExtendModal>
-      )} */}
     </TransparentView>
   );
 };

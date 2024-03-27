@@ -26,6 +26,8 @@ export default function VideoPlayScreen() {
   const [videoInfo, setVideoInfo] = useState<SimpleMedia>();
   const modalRef = useRef<BottomSheetModal>(null);
 
+  
+
   useEffect(() => {
     const fetchVideoInfo = async () => {
       const { result } = await getVideoInfo(videoId as string);
@@ -119,7 +121,10 @@ export default function VideoPlayScreen() {
           flex: 1,
         }}>
         <TabView.Item className='flex-1'>
-          <VideoPageDetail videoInfo={videoInfo} />
+          <VideoPageDetail
+            videoInfo={videoInfo}
+            setVideoInfo={setVideoInfo}
+          />
         </TabView.Item>
         <TabView.Item className='flex-1'>
           <VideoPageComment modalRef={modalRef} />

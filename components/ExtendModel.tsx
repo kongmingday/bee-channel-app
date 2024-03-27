@@ -1,13 +1,7 @@
-import { Modal, Pressable } from 'react-native';
-import { IonIcon, TransparentView, Text } from './Themed';
 import {
   ForwardedRef,
-  ReactElement,
   ReactNode,
-  RefObject,
   forwardRef,
-  useCallback,
-  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -19,6 +13,9 @@ import {
   BottomSheetModalProvider,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
+import { secondaryColor } from '.././constants/Colors';
+import { useAppDispatch } from '@/store/hook';
+import { changeParentId, changeUserToId } from '@/store/slices/chatSlice';
 
 export const ExtendModal = forwardRef(
   (props: { children: ReactNode }, ref: ForwardedRef<BottomSheetModal>) => {
@@ -26,6 +23,7 @@ export const ExtendModal = forwardRef(
     const modalRef = useRef<BottomSheetModal>(null);
     const [bottomIndex, setBottomIndex] = useState(0);
     const snapPoints = useMemo(() => [600], []);
+    const dispatch = useAppDispatch();
 
     useImperativeHandle<Partial<BottomSheetModal>, Partial<BottomSheetModal>>(
       ref,
@@ -53,7 +51,14 @@ export const ExtendModal = forwardRef(
               />
             );
           }}
-          snapPoints={snapPoints}>
+          handleIndicatorStyle={{
+            backgroundColor: secondaryColor,
+          }}
+          snapPoints={snapPoints}
+          onDismiss={() => {
+            dispatch(changeParentId('0'));
+            dispatch(changeUserToId('0'));
+          }}>
           <BottomSheetView
             style={{
               flex: 1,

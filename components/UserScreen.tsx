@@ -11,7 +11,11 @@ import clsx from 'clsx';
 import { BlurView } from 'expo-blur';
 import { buttonColor } from '@/constants/Colors';
 import { PageParams } from '@/.expo/types';
-import { getHistoryVideoPage, getWatchLaterVideoPage } from '@/api/media';
+import {
+  getHistoryVideoPage,
+  getLikedVideoPage,
+  getWatchLaterVideoPage,
+} from '@/api/media';
 import { SimpleMedia, Video } from '@/.expo/types/media';
 import { PATH_CONSTANTS } from '@/.expo/types/constant';
 import { UserAreaType } from '@/.expo/types/enum';
@@ -22,6 +26,7 @@ import {
 } from '@/store/hook';
 import { router } from 'expo-router';
 import { changeDeriveId } from '@/store/slices/chatSlice';
+import { LoadingComponent, NoMoreDataComponent } from './FlatListComponent';
 
 const UserTabRenderItem = (props: { item: SimpleMedia; index: number }) => {
   const { item, index } = props;
@@ -89,8 +94,6 @@ export const VerticalVideoList = (props: {
         onEndReached={() => {
           fetchFunc.fetchData();
         }}
-        ListHeaderComponent={<TransparentView className='h-2' />}
-        ListFooterComponent={<TransparentView className='h-4' />}
         renderItem={({ item, index }) => {
           return (
             <UserTabRenderItem
@@ -100,6 +103,23 @@ export const VerticalVideoList = (props: {
             />
           );
         }}
+        ListHeaderComponent={<TransparentView className='h-2' />}
+        ListEmptyComponent={
+          fetchFunc.isNoMore && fetchFunc.dataTotal > 0 ? (
+            <NoMoreDataComponent />
+          ) : (
+            <TransparentView className='p-1' />
+          )
+        }
+        ListFooterComponent={
+          fetchFunc.isNoMore ? (
+            <NoMoreDataComponent />
+          ) : fetchFunc.isLoading ? (
+            <LoadingComponent />
+          ) : (
+            <TransparentView className='p-1' />
+          )
+        }
         ItemSeparatorComponent={() => {
           return <TransparentView className='h-2' />;
         }}
@@ -111,9 +131,9 @@ export const VerticalVideoList = (props: {
 export const SelectionArea = () => {
   const actionArea = [
     {
-      name: 'Collection',
+      name: 'Liked',
       icons: <MaterialIcon name='star-border' />,
-      fetchData: getWatchLaterVideoPage,
+      fetchData: getLikedVideoPage,
     },
     {
       name: 'Watch Later',

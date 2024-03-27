@@ -38,11 +38,19 @@ export const getCommentPage = ({
   });
 };
 
-export const getChildrenComment = (
-  parentId: string,
-  pageParams: PageParams,
-) => {
-  return get(`/${serviceName}/comment/children/${parentId}`, pageParams);
+export const getChildrenComment = ({
+  parentId,
+  pageNo,
+  pageSize,
+}: {
+  parentId: string;
+  pageNo: number;
+  pageSize: number;
+}) => {
+  return get(`/${serviceName}/comment/children/${parentId}`, {
+    pageNo,
+    pageSize,
+  });
 };
 
 export const favoriteAction = (param: FavoriteParam) => {

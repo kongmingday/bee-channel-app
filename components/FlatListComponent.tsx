@@ -5,6 +5,7 @@ import { ComponentType, ReactElement, ReactNode } from 'react';
 import { BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { FlatList } from 'react-native-gesture-handler';
 import { FlashList } from '@shopify/flash-list';
+import { FetchDataPageReturn } from '@/store/hook';
 
 export const NoMoreDataComponent = () => {
   return (
@@ -30,42 +31,4 @@ export const LoadingComponent = () => {
       />
     </TransparentView>
   );
-};
-
-export const A = (props: {}, a: boolean) => {
-  return <></>;
-};
-
-export type BottomSheetListType = Parameters<typeof BottomSheetFlatList>;
-export type FlatListType = Parameters<typeof FlatList>;
-
-export const SimpleFlatList = <P extends {}, T, G>(
-  WrapComponent: ComponentType<P>,
-) => {
-  return (props: P, fetchFunction: G) => {
-    return (
-      <WrapComponent
-        {...props}
-        // keyExtractor={(item: T, index: number) => {
-        //   return index + item.id;
-        // }}
-        // ListEmptyComponent={
-        //   isNoMore ? (
-        //     <NoMoreDataComponent />
-        //   ) : (
-        //     <TransparentView className='p-1' />
-        //   )
-        // }
-        // ListFooterComponent={
-        //   isNoMore ? (
-        //     <NoMoreDataComponent />
-        //   ) : isLoading ? (
-        //     <LoadingComponent />
-        //   ) : (
-        //     <TransparentView className='p-1' />
-        //   )
-        // }
-      />
-    );
-  };
 };
