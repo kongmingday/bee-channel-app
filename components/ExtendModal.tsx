@@ -20,13 +20,17 @@ import { secondBgColor, secondaryColor } from '../constants/Colors';
 import { BaseBlurButton, Text, TransparentView } from './Themed';
 import { CheckBox } from '@rneui/base';
 import DateTimePicker, {
+  DateTimePickerAndroid,
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import dayjs from 'dayjs';
 import { dateFormat } from '@/utils/common/calculateUtil';
-import { uploadUserInfo } from '@/api/user';
+import { uploadSingleFile, uploadUserInfo } from '@/api/user';
 import { router } from 'expo-router';
 import { UploadUserInfo } from '@/.expo/types/auth';
+import * as ImagePicker from 'expo-image-picker';
+import { Avatar } from '@rneui/themed';
+import { PATH_CONSTANTS } from '@/.expo/types/constant';
+import { Platform } from 'react-native';
 
 export const ExtendModal = forwardRef(
   (
@@ -214,6 +218,78 @@ export const NewNameBottomSheet = () => {
   );
 };
 
+export const ChangeProfileBottomSheet = (props: { profile: string }) => {
+  const [profile, setProfile] = useState<ImagePicker.ImagePickerAsset>({
+    uri: props.profile,
+  } as ImagePicker.ImagePickerAsset);
+
+  const pickImageAsync = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfile(result.assets[0]);
+    }
+  };
+
+  const uploadAvatar = () => {
+    const formData = new FormData();
+
+    formData.append('file', {
+      name: new Date().getMilliseconds() + Math.random() * 3600 + '.jpg',
+      type: 'image/jpeg',
+      uri:
+        Platform.OS === 'android'
+          ? profile.uri
+          : profile.uri.replace('file://', ''),
+    } as any);
+
+    uploadSingleFile(formData).then((response) => {
+      const { result } = response;
+      if (result) {
+        router.replace('/(no-direct)/personal/information');
+      }
+    });
+  };
+
+  return (
+    <>
+      <TransparentView
+        className='flex-row justify-center items-center'
+        style={{
+          columnGap: 10,
+        }}>
+        <Avatar
+          size={100}
+          rounded
+          source={{
+            uri: `${profile.uri}`,
+          }}
+        />
+        <BaseBlurButton
+          onPress={() => {
+            pickImageAsync();
+          }}>
+          <Text>Select Image</Text>
+        </BaseBlurButton>
+      </TransparentView>
+      <TransparentView className='w-full items-center mb-4'>
+        <BaseBlurButton
+          containerStyle={{
+            width: '50%',
+          }}
+          onPress={() => {
+            uploadAvatar();
+          }}>
+          <Text>Save</Text>
+        </BaseBlurButton>
+      </TransparentView>
+    </>
+  );
+};
+
 export const ChangeGenderBottomSheet = (props: { gender: number }) => {
   const genderList = ['Female', 'Male', 'Private'];
   const [selectedIndex, setSelectedIndex] = useState<number>(props.gender);
@@ -258,19 +334,52 @@ export const ChangeGenderBottomSheet = (props: { gender: number }) => {
 };
 
 export const ChangeBirthdayBottomSheet = (props: { birthday: string }) => {
-  const [pickerShow, setShowState] = useState<boolean>(false);
+  // const [pickerShow, setShowState] = useState<boolean>(false);
   const [birthday, setBirthday] = useState<Date>(new Date(props.birthday));
 
+  // const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+  //   const {
+  //     type,
+  //     nativeEvent: { timestamp, utcOffset },
+  //   } = event;
+  //   if (type === 'dismissed') {
+  //     return;
+  //   }
+
+  //   if (selectedDate) {
+  //     setBirthday(selectedDate);
+  //   }
+  //   setShowState(false);
+  // };
+
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    // console.log(selectedDate);
-    setShowState(false);
-    // if (selectedDate) {
-    //   setBirthday(selectedDate);
-    // }
+    if (selectedDate) {
+      setBirthday(selectedDate);
+    }
+  };
+
+  const showMode = () => {
+    DateTimePickerAndroid.open({
+      value: birthday,
+      onChange,
+      mode: 'date',
+      is24Hour: true,
+      maximumDate: new Date(),
+    });
   };
 
   return (
     <>
+      {/* {pickerShow && (
+        <DateTimePicker
+          testID='1'
+          mode='date'
+          is24Hour={false}
+          value={new Date()}
+          onChange={onChange}
+          // maximumDate={new Date()}
+        />
+      )} */}
       <TransparentView
         className='flex-row justify-center items-center'
         style={{
@@ -281,26 +390,24 @@ export const ChangeBirthdayBottomSheet = (props: { birthday: string }) => {
             width: '80%',
           }}
           onPress={() => {
-            setShowState(true);
+            showMode();
+            // setShowState(true);
           }}>
           <Text>{`${dateFormat(birthday)}`}</Text>
         </BaseBlurButton>
-        {pickerShow && (
-          <DateTimePicker
-            testID='1'
-            mode='date'
-            value={birthday}
-            // onChange={onChange}
-            maximumDate={new Date()}
-          />
-        )}
       </TransparentView>
       <TransparentView className='w-full items-center mb-4'>
         <BaseBlurButton
           containerStyle={{
             width: '80%',
           }}
-          onPress={() => {}}>
+          onPress={() => {
+            if (birthday !== new Date(props.birthday)) {
+              updateUserInfo({
+                birthday: dateFormat(birthday, 'YYYY-MM-DD hh:mm:ss'),
+              });
+            }
+          }}>
           <Text>Save</Text>
         </BaseBlurButton>
       </TransparentView>
@@ -344,7 +451,14 @@ export const ChangeIntroductionBottomSheet = (props: {
           containerStyle={{
             width: '80%',
           }}
-          onPress={() => {}}>
+          onPress={() => {
+            if (
+              introduction.length > 0 &&
+              introduction !== props.introduction
+            ) {
+              updateUserInfo({ introduction });
+            }
+          }}>
           <Text>Save</Text>
         </BaseBlurButton>
       </TransparentView>

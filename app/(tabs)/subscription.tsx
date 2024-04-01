@@ -6,7 +6,7 @@ import {
 } from '@/components/SubscriptionScreen';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useAppDispatch } from '@/store/hook';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { UserInfo } from '@/.expo/types/auth';
 import { useFocusEffect } from 'expo-router';
 import { getUserInfo } from '@/api/user';
@@ -18,14 +18,16 @@ export default function SubscriptionScreen() {
   const dispatch = useAppDispatch();
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
 
-  useFocusEffect(() => {
-    const getInfo = async () => {
-      const { result: userInfo } = await getUserInfo();
-      setUserInfo(userInfo);
-      dispatch(changeUserInfo(userInfo));
-    };
-    getInfo();
-  });
+  useFocusEffect(
+    useCallback(() => {
+      const getInfo = async () => {
+        const { result: userInfo } = await getUserInfo();
+        setUserInfo(userInfo);
+        dispatch(changeUserInfo(userInfo));
+      };
+      getInfo();
+    }, []),
+  );
 
   return (
     <TransparentView className='flex-1 bg-transparent'>

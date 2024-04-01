@@ -80,3 +80,19 @@ export const request = async (
     });
   return result;
 };
+
+export const formDataPost = async (url: string, body: any) => {
+  let authToken: string = await getAuthToken();
+
+  const options = {
+    method: 'POST',
+    headers: {
+      Authorization: authToken,
+    },
+    body,
+  };
+  url = `${baseUrl}${url}`;
+  return fetch(url, options).then((res) => {
+    return res.json();
+  });
+};

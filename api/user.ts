@@ -1,6 +1,6 @@
 import { SearchParams } from '@/.expo/types';
 import { UploadUserInfo } from '@/.expo/types/auth';
-import { get, put } from '@/utils/common/fetchUtil';
+import { get, put, formDataPost } from '@/utils/common/fetchUtil';
 import { setUserInfo } from '@/utils/common/tokenUtils';
 
 const serviceName = process.env.EXPO_PUBLIC_USER_SERVICE;
@@ -38,4 +38,8 @@ export const subscribeAction = (userToId: string) => {
 
 export const getSubscription = (pageParams: SearchParams) => {
   return get(`/${serviceName}/info/subscription`, { ...pageParams });
+};
+
+export const uploadSingleFile = (file: FormData) => {
+  return formDataPost(`/${serviceName}/info/upload/avatar`, file);
 };

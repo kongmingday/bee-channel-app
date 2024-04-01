@@ -1,19 +1,21 @@
 import { BlurView } from 'expo-blur';
 import { TransparentView, FeatherIcon, Text } from './Themed';
 import { ReactNode, useRef, useState } from 'react';
-import { Avatar } from '@rneui/base';
+import { Avatar, Button } from '@rneui/base';
 import { ScrollView } from 'moti';
 import { dateFormat } from '@/utils/common/calculateUtil';
 import {
   ChangeBirthdayBottomSheet,
   ChangeGenderBottomSheet,
   ChangeIntroductionBottomSheet,
+  ChangeProfileBottomSheet,
   ExtendBottomSheet,
   NewNameBottomSheet,
 } from './ExtendModal';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { Pressable } from 'react-native';
 import { AllUserInfo } from '@/.expo/types/auth';
+import { PATH_CONSTANTS } from '@/.expo/types/constant';
 
 export const InformationListItem = (props: {
   title?: ReactNode;
@@ -67,11 +69,18 @@ export const InformationList = (props: { userInfo: AllUserInfo }) => {
           size={65}
           rounded
           source={{
-            uri: `http://192.168.25.128:9000/bee-channel/image/1.png`,
+            uri: `${PATH_CONSTANTS}${userInfo.profile}`,
           }}
         />
       ),
-      extendComponent: <NewNameBottomSheet />,
+      onPress: () => {
+        modalRef.current?.expand();
+      },
+      extendComponent: (
+        <ChangeProfileBottomSheet
+          profile={`${PATH_CONSTANTS}${userInfo.profile}`}
+        />
+      ),
     },
     {
       title: <Text className='text-lg'>Username</Text>,
