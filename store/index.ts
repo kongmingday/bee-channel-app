@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import AppReducer from './slices/appSlice';
 import ChatReducer from './slices/chatSlice';
+import SearchSlice from './slices/searchSlice';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -10,6 +11,7 @@ export const store = configureStore({
   reducer: {
     app: AppReducer,
     chat: ChatReducer,
+    search: SearchSlice,
   },
 });
 

@@ -2,80 +2,79 @@ import {
   MaterialIcon,
   Text,
   BaseBlurButton,
-  TransparentView
-} from '@/components/Themed'
-import { TextInput, Pressable } from 'react-native'
+  TransparentView,
+} from '@/components/Themed';
+import { TextInput, Pressable } from 'react-native';
 import {
   secondTextColor,
   secondBgColor,
-  secondaryColor
-} from '@/constants/Colors'
-import { LinearGradient } from 'expo-linear-gradient'
-import { router } from 'expo-router'
-import { useState, useEffect } from 'react'
-import { MotiView, AnimatePresence } from 'moti'
-import { sendCodeToEmail, verify } from '@/api/checkcode'
-import { isEmail } from '@/utils/common/calculateUtil'
-import { login } from '@/api/auth'
-import { VERIFY_KEY } from '@/.expo/types/constant'
-import { handleShowToast } from '@/store/assembly/appAssembly'
-import { useDispatch } from 'react-redux'
-import { setAuthToken } from '@/utils/common/tokenUtils'
+  secondaryColor,
+} from '@/constants/Colors';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import { useState, useEffect } from 'react';
+import { MotiView, AnimatePresence } from 'moti';
+import { sendCodeToEmail, verify } from '@/api/checkcode';
+import { isEmail } from '@/utils/common/calculateUtil';
+import { login } from '@/api/auth';
+import { VERIFY_KEY } from '@/.expo/types/constant';
+import { handleShowToast } from '@/store/assembly/appAssembly';
+import { useDispatch } from 'react-redux';
+import { setAuthToken } from '@/utils/common/tokenUtils';
+import { NotTabView } from '@/components/CommonView';
 
 const MainArea = (props: {
-  loginState: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+  loginState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 }) => {
-  const dispatch = useDispatch()
-  const [isLogin, setLoginState] = props.loginState
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [code, setCode] = useState('')
+  const dispatch = useDispatch();
+  const [isLogin, setLoginState] = props.loginState;
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [code, setCode] = useState('');
 
   const fetchEmailCode = () => {
     if (!isEmail(email)) {
-      handleShowToast(dispatch, 'Please check your email.')
-      return
+      handleShowToast(dispatch, 'Please check your email.');
+      return;
     }
-    sendCodeToEmail(email)
-  }
+    sendCodeToEmail(email);
+  };
 
   const handleLogin = async () => {
-    const verifyResult = await verify(VERIFY_KEY + email, code)
+    const verifyResult = await verify(VERIFY_KEY + email, code);
     if (!verifyResult) {
-      handleShowToast(dispatch, 'The verify code has error.')
-      return
+      handleShowToast(dispatch, 'The verify code has error.');
+      return;
     }
 
     const loginResult = await login({
       email,
       password,
-      authType: 'Password'
-    })
+      authType: 'Password',
+    });
     if (!loginResult) {
-      handleShowToast(dispatch, 'Please check your account or password.')
-      return
+      handleShowToast(dispatch, 'Please check your account or password.');
+      return;
     }
-    setAuthToken(loginResult.access_token)
-    router.push('/(tabs)/user')
-  }
+    setAuthToken(loginResult.access_token);
+    router.push('/(tabs)/');
+  };
 
   return (
     <MotiView
       className='flex-1 w-full gap-y-5'
       from={{
-        opacity: 0
+        opacity: 0,
       }}
       animate={{
-        opacity: 1
+        opacity: 1,
       }}
       exit={{
-        opacity: 0
-      }}
-    >
+        opacity: 0,
+      }}>
       <TransparentView
         className='w-full px-3'
-        style={{ gap: 5 }}
-      >
+        style={{ gap: 5 }}>
         <Text className='text-2xl'>Hi!</Text>
         <Text className='px-4 text-2xl'>
           {isLogin ? 'Sign in now !' : 'Sign up now !'}
@@ -86,8 +85,7 @@ const MainArea = (props: {
       </TransparentView>
       <TransparentView
         className='w-full items-center'
-        style={{ gap: 15 }}
-      >
+        style={{ gap: 15 }}>
         <TextInput
           className='w-[90%] px-4 py-2 rounded-full'
           placeholder='Email'
@@ -95,7 +93,7 @@ const MainArea = (props: {
           inputMode='email'
           onChangeText={setEmail}
           style={{
-            backgroundColor: secondBgColor
+            backgroundColor: secondBgColor,
           }}
         />
         <TextInput
@@ -106,7 +104,7 @@ const MainArea = (props: {
           onChangeText={setPassword}
           passwordRules={'*'}
           style={{
-            backgroundColor: secondBgColor
+            backgroundColor: secondBgColor,
           }}
         />
         {!isLogin && (
@@ -116,31 +114,29 @@ const MainArea = (props: {
             placeholder='Confirm'
             passwordRules={'*'}
             style={{
-              backgroundColor: secondBgColor
+              backgroundColor: secondBgColor,
             }}
           />
         )}
         <TransparentView
           className='w-[90%] flex-row items-center'
           style={{
-            gap: 12
-          }}
-        >
+            gap: 12,
+          }}>
           <TextInput
             value={code}
             onChangeText={setCode}
             className='flex-1 px-4 py-2 rounded-full'
             placeholder='Verify Code'
             style={{
-              backgroundColor: secondBgColor
+              backgroundColor: secondBgColor,
             }}
           />
           <BaseBlurButton
             containerStyle={{
-              flex: 1
+              flex: 1,
             }}
-            onPress={fetchEmailCode}
-          >
+            onPress={fetchEmailCode}>
             Send
           </BaseBlurButton>
         </TransparentView>
@@ -148,12 +144,11 @@ const MainArea = (props: {
       <MotiView className='w-full absolute bottom-10 gap-y-5 items-center'>
         <BaseBlurButton
           containerStyle={{
-            width: '90%'
+            width: '90%',
           }}
           onPress={() => {
-            handleLogin()
-          }}
-        >
+            handleLogin();
+          }}>
           Log in
         </BaseBlurButton>
         <TransparentView className='flex-row gap-1'>
@@ -162,43 +157,26 @@ const MainArea = (props: {
           </Text>
           <Pressable
             onPress={() => {
-              setLoginState((pre) => !pre)
-            }}
-          >
+              setLoginState((pre) => !pre);
+            }}>
             <Text>Click here!</Text>
           </Pressable>
         </TransparentView>
       </MotiView>
     </MotiView>
-  )
-}
+  );
+};
 
 export default function LoginModal() {
-  const [isLogin, setLoginState] = useState(true)
+  const [isLogin, setLoginState] = useState(true);
 
   return (
-    <LinearGradient
-      colors={['#e9defa', '#ace0f9']}
-      className='flex-1 px-8 pt-6'
-    >
-      <Pressable
-        className='self-start mb-6'
-        onPress={() => {
-          router.back()
-        }}
-      >
-        <MaterialIcon
-          lightColor={secondaryColor}
-          name='chevron-left'
-          size={30}
-        />
-      </Pressable>
+    <NotTabView>
       <MotiView
         className='flex-1 items-center'
         style={{
-          gap: 45
-        }}
-      >
+          gap: 45,
+        }}>
         <AnimatePresence exitBeforeEnter>
           {isLogin && (
             <MainArea
@@ -214,6 +192,6 @@ export default function LoginModal() {
           )}
         </AnimatePresence>
       </MotiView>
-    </LinearGradient>
-  )
+    </NotTabView>
+  );
 }

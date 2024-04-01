@@ -17,6 +17,7 @@ export type FetchDataPageReturn<T, P> = {
   isNoMore: boolean;
   dataTotal: number;
   otherParams: P | undefined;
+  setData: Dispatch<SetStateAction<T[]>>;
   setRefreshState: Dispatch<SetStateAction<boolean>>;
   setPageParams: Dispatch<SetStateAction<PageParams>>;
   setFetchFunction: Dispatch<SetStateAction<FetchFunctionType<P>>>;
@@ -28,6 +29,7 @@ export type FetchDataPageReturn<T, P> = {
 
 export const useFetchDataPage = <T, R = any, P = any>(
   fetchFunction: FetchFunctionType<P>,
+  enableProcessData?: boolean,
   processData?: (data: T[]) => R[],
   pageSize?: number,
   otherParams?: P,
@@ -36,7 +38,9 @@ export const useFetchDataPage = <T, R = any, P = any>(
   const [dataTotal, setTotal] = useState<number>(0);
   const [isLoading, setLoadState] = useState<boolean>(false);
   const [isRefreshing, setRefreshState] = useState<boolean>(false);
-  const [enableProcess, setProcessState] = useState<boolean>(false);
+  const [enableProcess, setProcessState] = useState<boolean>(
+    enableProcessData || false,
+  );
   const [params, setParams] = useState<P | undefined>(otherParams);
   const [fetchTemplate, setFetchTemplate] = useState<FetchFunctionType<P>>(
     () => fetchFunction,
@@ -80,6 +84,9 @@ export const useFetchDataPage = <T, R = any, P = any>(
   };
 
   const refreshPage = async () => {
+    if (isLoading || isRefreshing) {
+      return;
+    }
     setRefreshState(true);
     setData([]);
     setTotal(0);
@@ -96,7 +103,7 @@ export const useFetchDataPage = <T, R = any, P = any>(
         setData(data);
         setTotal(total);
         setPageParams((pre) => ({ ...pre, pageNo: 1 }));
-        if ((pageParams.pageNo + 1) * pageParams.pageSize > total) {
+        if (pageParams.pageSize > total) {
           setNoMoreState(true);
         }
       })
@@ -110,7 +117,11 @@ export const useFetchDataPage = <T, R = any, P = any>(
     if (dataTotal > 0) {
       refreshPage();
     }
-  }, [fetchTemplate, params]);
+  }, [fetchTemplate]);
+
+  useEffect(() => {
+    refreshPage();
+  }, [params]);
 
   return {
     data,
@@ -119,6 +130,7 @@ export const useFetchDataPage = <T, R = any, P = any>(
     isNoMore,
     dataTotal,
     otherParams: params,
+    setData,
     setRefreshState,
     setPageParams,
     setFetchFunction: setFetchTemplate,

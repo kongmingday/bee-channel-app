@@ -1,6 +1,7 @@
 import numberal from 'numeral';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { FavoriteType } from '@/.expo/types/enum';
 
 export const isEmail = (value: string) => {
@@ -18,6 +19,10 @@ export const calculateDuration = (targetTime?: string) => {
   }
   dayjs.extend(relativeTime);
   return dayjs(targetTime).fromNow();
+};
+
+export const dateFormat = (targetTime: string | Date, template?: string) => {
+  return dayjs(targetTime).format(template || 'YYYY-MM-DD');
 };
 
 export const favoriteDataPackaging = (

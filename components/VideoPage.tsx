@@ -204,7 +204,8 @@ export const VideoPageDetail = (props: {
           <MaterialIcon name='star-border' />
         </BaseButton>
       </TransparentView>
-      <SimpleVideoList />
+      {/* TODO RECOMMENDATION */}
+      {/* <SimpleVideoList /> */}
     </TransparentView>
   );
 };
@@ -400,6 +401,7 @@ export const VideoPageComment = (props: {
   } = isChildren
     ? useFetchDataPage<Comment, any, any>(
         getChildrenComment,
+        false,
         undefined,
         undefined,
         {
@@ -408,6 +410,7 @@ export const VideoPageComment = (props: {
       )
     : useFetchDataPage<Comment, any, any>(
         getCommentPage,
+        false,
         undefined,
         undefined,
         {

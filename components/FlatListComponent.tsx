@@ -1,11 +1,6 @@
 import { secondaryColor } from '@/constants/Colors';
 import { TransparentView, Text } from './Themed';
 import * as Progress from 'react-native-progress';
-import { ComponentType, ReactElement, ReactNode } from 'react';
-import { BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
-import { FlatList } from 'react-native-gesture-handler';
-import { FlashList } from '@shopify/flash-list';
-import { FetchDataPageReturn } from '@/store/hook';
 
 export const NoMoreDataComponent = () => {
   return (

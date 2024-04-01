@@ -1,5 +1,6 @@
 import qs from 'qs';
-import { getAuthToken, removeAuthToken } from './tokenUtils';
+import { getAuthToken, removeAuthToken, removeUserInfo } from './tokenUtils';
+import { router } from 'expo-router';
 
 type HTTP_METHOD = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -59,6 +60,7 @@ export const request = async (
         );
       }
       if (response.status !== 200) {
+        console.log(response);
         throw new Error('Something error');
       }
       return response.json();
@@ -68,6 +70,8 @@ export const request = async (
         return 'no response data';
       } else if (error instanceof AuthenticationError) {
         removeAuthToken();
+        removeUserInfo();
+        router.replace('/login-modal');
       } else {
         console.log(error);
         // Toast('server error, please try again', ToastMode.ERROE)

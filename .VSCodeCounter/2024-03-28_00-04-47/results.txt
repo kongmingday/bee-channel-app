@@ -1,0 +1,102 @@
+Date : 2024-03-28 00:04:47
+Directory : d:\CodeData\Project\bee-channel-app
+Total : 54 files,  4432 codes, 37 comments, 355 blanks, all 4824 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| TypeScript JSX     |         26 |      3,198 |         21 |        205 |      3,424 |
+| TypeScript         |         20 |        657 |         15 |        136 |        808 |
+| Markdown           |          1 |        407 |          0 |          2 |        409 |
+| JSON               |          2 |        113 |          0 |          3 |        116 |
+| JavaScript         |          3 |         25 |          1 |          6 |         32 |
+| JSON with Comments |          1 |         17 |          0 |          1 |         18 |
+| Properties         |          1 |         15 |          0 |          2 |         17 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                         | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                            |         54 |      4,432 |         37 |        355 |      4,824 |
+| . (Files)                                                                    |          7 |        570 |          1 |         10 |        581 |
+| api                                                                          |          7 |        219 |          0 |         63 |        282 |
+| app                                                                          |         12 |        841 |         16 |         70 |        927 |
+| app (Files)                                                                  |          5 |        399 |         15 |         36 |        450 |
+| app\(no-direct)                                                              |          3 |        188 |          0 |         14 |        202 |
+| app\(no-direct) (Files)                                                      |          2 |         56 |          0 |          7 |         63 |
+| app\(no-direct)\video-play                                                   |          1 |        132 |          0 |          7 |        139 |
+| app\(tabs)                                                                   |          4 |        254 |          1 |         20 |        275 |
+| components                                                                   |         18 |      2,371 |         13 |        143 |      2,527 |
+| components (Files)                                                           |         17 |      2,364 |         13 |        139 |      2,516 |
+| components\__tests__                                                         |          1 |          7 |          0 |          4 |         11 |
+| constants                                                                    |          1 |         24 |          0 |          3 |         27 |
+| store                                                                        |          6 |        255 |          6 |         35 |        296 |
+| store (Files)                                                                |          2 |        141 |          0 |         15 |        156 |
+| store\assembly                                                               |          1 |          8 |          0 |          2 |         10 |
+| store\slices                                                                 |          3 |        106 |          6 |         18 |        130 |
+| utils                                                                        |          3 |        152 |          1 |         31 |        184 |
+| utils\common                                                                 |          3 |        152 |          1 |         31 |        184 |
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                     | language           | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| d:\CodeData\Project\bee-channel-app\.env                                     | Properties         |         15 |          0 |          2 |         17 |
+| d:\CodeData\Project\bee-channel-app\README.md                                | Markdown           |        407 |          0 |          2 |        409 |
+| d:\CodeData\Project\bee-channel-app\api\auth.ts                              | TypeScript         |         20 |          0 |          5 |         25 |
+| d:\CodeData\Project\bee-channel-app\api\checkcode.ts                         | TypeScript         |          8 |          0 |          4 |         12 |
+| d:\CodeData\Project\bee-channel-app\api\live.ts                              | TypeScript         |         21 |          0 |         10 |         31 |
+| d:\CodeData\Project\bee-channel-app\api\media.ts                             | TypeScript         |        104 |          0 |         26 |        130 |
+| d:\CodeData\Project\bee-channel-app\api\order.ts                             | TypeScript         |          8 |          0 |          3 |         11 |
+| d:\CodeData\Project\bee-channel-app\api\upload.ts                            | TypeScript         |         24 |          0 |          7 |         31 |
+| d:\CodeData\Project\bee-channel-app\api\user.ts                              | TypeScript         |         34 |          0 |          8 |         42 |
+| d:\CodeData\Project\bee-channel-app\app.json                                 | JSON               |         43 |          0 |          2 |         45 |
+| d:\CodeData\Project\bee-channel-app\app\(no-direct)\_layout.tsx              | TypeScript JSX     |         41 |          0 |          5 |         46 |
+| d:\CodeData\Project\bee-channel-app\app\(no-direct)\search.tsx               | TypeScript JSX     |         15 |          0 |          2 |         17 |
+| d:\CodeData\Project\bee-channel-app\app\(no-direct)\video-play\[videoId].tsx | TypeScript JSX     |        132 |          0 |          7 |        139 |
+| d:\CodeData\Project\bee-channel-app\app\(tabs)\_layout.tsx                   | TypeScript JSX     |         99 |          1 |          6 |        106 |
+| d:\CodeData\Project\bee-channel-app\app\(tabs)\index.tsx                     | TypeScript JSX     |         17 |          0 |          2 |         19 |
+| d:\CodeData\Project\bee-channel-app\app\(tabs)\subscription.tsx              | TypeScript JSX     |         22 |          0 |          3 |         25 |
+| d:\CodeData\Project\bee-channel-app\app\(tabs)\user.tsx                      | TypeScript JSX     |        116 |          0 |          9 |        125 |
+| d:\CodeData\Project\bee-channel-app\app\+html.tsx                            | TypeScript JSX     |         24 |         10 |          5 |         39 |
+| d:\CodeData\Project\bee-channel-app\app\+not-found.tsx                       | TypeScript JSX     |         39 |          0 |          6 |         45 |
+| d:\CodeData\Project\bee-channel-app\app\_layout.tsx                          | TypeScript JSX     |         91 |          4 |         12 |        107 |
+| d:\CodeData\Project\bee-channel-app\app\login-modal.tsx                      | TypeScript JSX     |        212 |          0 |          8 |        220 |
+| d:\CodeData\Project\bee-channel-app\app\modal.tsx                            | TypeScript JSX     |         33 |          1 |          5 |         39 |
+| d:\CodeData\Project\bee-channel-app\babel.config.js                          | JavaScript         |          7 |          0 |          1 |          8 |
+| d:\CodeData\Project\bee-channel-app\components\EditScreenInfo.tsx            | TypeScript JSX     |         70 |          0 |          8 |         78 |
+| d:\CodeData\Project\bee-channel-app\components\ExtendModel.tsx               | TypeScript JSX     |         69 |          0 |          4 |         73 |
+| d:\CodeData\Project\bee-channel-app\components\ExternalLink.tsx              | TypeScript JSX     |         21 |          3 |          2 |         26 |
+| d:\CodeData\Project\bee-channel-app\components\FlatListComponent.tsx         | TypeScript JSX     |         32 |          0 |          3 |         35 |
+| d:\CodeData\Project\bee-channel-app\components\HomeScreen.tsx                | TypeScript JSX     |        323 |          0 |         11 |        334 |
+| d:\CodeData\Project\bee-channel-app\components\SearchScreen.tsx              | TypeScript JSX     |        365 |          0 |         26 |        391 |
+| d:\CodeData\Project\bee-channel-app\components\StyledText.tsx                | TypeScript JSX     |          4 |          0 |          2 |          6 |
+| d:\CodeData\Project\bee-channel-app\components\SubscriptionScreen.tsx        | TypeScript JSX     |        163 |          0 |          8 |        171 |
+| d:\CodeData\Project\bee-channel-app\components\Themed.tsx                    | TypeScript JSX     |        262 |          0 |         27 |        289 |
+| d:\CodeData\Project\bee-channel-app\components\Toast.tsx                     | TypeScript JSX     |         23 |          0 |          3 |         26 |
+| d:\CodeData\Project\bee-channel-app\components\UserScreen.tsx                | TypeScript JSX     |        216 |          0 |         12 |        228 |
+| d:\CodeData\Project\bee-channel-app\components\VideoAssembly.tsx             | TypeScript JSX     |        219 |          0 |          9 |        228 |
+| d:\CodeData\Project\bee-channel-app\components\VideoPage.tsx                 | TypeScript JSX     |        582 |          2 |         18 |        602 |
+| d:\CodeData\Project\bee-channel-app\components\__tests__\StyledText-test.js  | JavaScript         |          7 |          0 |          4 |         11 |
+| d:\CodeData\Project\bee-channel-app\components\useClientOnlyValue.ts         | TypeScript         |          3 |          1 |          1 |          5 |
+| d:\CodeData\Project\bee-channel-app\components\useClientOnlyValue.web.ts     | TypeScript         |          8 |          2 |          3 |         13 |
+| d:\CodeData\Project\bee-channel-app\components\useColorScheme.ts             | TypeScript         |          1 |          0 |          1 |          2 |
+| d:\CodeData\Project\bee-channel-app\components\useColorScheme.web.ts         | TypeScript         |          3 |          5 |          1 |          9 |
+| d:\CodeData\Project\bee-channel-app\constants\Colors.ts                      | TypeScript         |         24 |          0 |          3 |         27 |
+| d:\CodeData\Project\bee-channel-app\package.json                             | JSON               |         70 |          0 |          1 |         71 |
+| d:\CodeData\Project\bee-channel-app\store\assembly\appAssembly.tsx           | TypeScript JSX     |          8 |          0 |          2 |         10 |
+| d:\CodeData\Project\bee-channel-app\store\hook.ts                            | TypeScript         |        124 |          0 |         12 |        136 |
+| d:\CodeData\Project\bee-channel-app\store\index.ts                           | TypeScript         |         17 |          0 |          3 |         20 |
+| d:\CodeData\Project\bee-channel-app\store\slices\appSlice.ts                 | TypeScript         |         21 |          2 |          6 |         29 |
+| d:\CodeData\Project\bee-channel-app\store\slices\chatSlice.ts                | TypeScript         |         48 |          2 |          6 |         56 |
+| d:\CodeData\Project\bee-channel-app\store\slices\searchSlice.ts              | TypeScript         |         37 |          2 |          6 |         45 |
+| d:\CodeData\Project\bee-channel-app\tailwind.config.js                       | JavaScript         |         11 |          1 |          1 |         13 |
+| d:\CodeData\Project\bee-channel-app\tsconfig.json                            | JSON with Comments |         17 |          0 |          1 |         18 |
+| d:\CodeData\Project\bee-channel-app\utils\common\calculateUtil.ts            | TypeScript         |         45 |          0 |          6 |         51 |
+| d:\CodeData\Project\bee-channel-app\utils\common\fetchUtil.ts                | TypeScript         |         66 |          1 |         12 |         79 |
+| d:\CodeData\Project\bee-channel-app\utils\common\tokenUtils.ts               | TypeScript         |         41 |          0 |         13 |         54 |
+| Total                                                                        |                    |      4,432 |         37 |        355 |      4,824 |
++------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

@@ -14,8 +14,10 @@ import { secondaryColor, ignoreTextColor } from '@/constants/Colors';
 import { PATH_CONSTANTS } from '@/.expo/types/constant';
 import { getVideoInfo } from '@/api/media';
 import { SimpleMedia } from '@/.expo/types/media';
-import { ExtendModal } from '@/components/ExtendModel';
+import { ExtendModal } from '@/components/ExtendModal';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { useDispatch } from 'react-redux';
+import { changeParentId, changeUserToId } from '@/store/slices/chatSlice';
 
 export default function VideoPlayScreen() {
   const { videoId } = useLocalSearchParams();
@@ -26,7 +28,7 @@ export default function VideoPlayScreen() {
   const [videoInfo, setVideoInfo] = useState<SimpleMedia>();
   const modalRef = useRef<BottomSheetModal>(null);
 
-  
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchVideoInfo = async () => {
@@ -130,7 +132,12 @@ export default function VideoPlayScreen() {
           <VideoPageComment modalRef={modalRef} />
         </TabView.Item>
       </TabView>
-      <ExtendModal ref={modalRef}>
+      <ExtendModal
+        ref={modalRef}
+        onDismiss={() => {
+          dispatch(changeParentId('0'));
+          dispatch(changeUserToId('0'));
+        }}>
         <VideoPageComment isChildren />
       </ExtendModal>
     </LinearGradient>

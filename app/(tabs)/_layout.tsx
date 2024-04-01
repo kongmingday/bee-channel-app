@@ -1,36 +1,36 @@
-import React from 'react'
-import FontAwesome from '@expo/vector-icons/FontAwesome'
-import { Link, Tabs } from 'expo-router'
-import { Pressable } from 'react-native'
+import React from 'react';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Link, Tabs } from 'expo-router';
+import { Pressable } from 'react-native';
 
-import Colors from '@/constants/Colors'
-import { useColorScheme } from '@/components/useColorScheme'
-import { useClientOnlyValue } from '@/components/useClientOnlyValue'
-import { LinearGradient } from 'expo-linear-gradient'
-import { BlurView } from 'expo-blur'
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
+import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name']
-  color: string
+  name: React.ComponentProps<typeof MaterialIcons>['name'];
+  color: string;
 }) {
   return (
-    <FontAwesome
+    <MaterialIcons
       size={28}
       style={{ marginBottom: -3 }}
       {...props}
     />
-  )
+  );
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme()
+  const colorScheme = useColorScheme();
 
   return (
     <LinearGradient
       colors={['#e9defa', '#ace0f9']}
-      className='flex-1'
-    >
+      className='flex-1'>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
@@ -42,24 +42,22 @@ export default function TabLayout() {
               className='flex-1'
             />
           ),
-          headerShown: false //useClientOnlyValue(false, true),
-        }}
-      >
+          headerShown: false, //useClientOnlyValue(false, true),
+        }}>
         <Tabs.Screen
           name='index'
           options={{
             title: 'Home',
             tabBarIcon: ({ color }) => (
               <TabBarIcon
-                name='home'
+                name='houseboat'
                 color={color}
               />
             ),
             headerRight: () => (
               <Link
                 href='/modal'
-                asChild
-              >
+                asChild>
                 <Pressable>
                   {({ pressed }) => (
                     <FontAwesome
@@ -71,7 +69,7 @@ export default function TabLayout() {
                   )}
                 </Pressable>
               </Link>
-            )
+            ),
           }}
         />
         <Tabs.Screen
@@ -80,10 +78,10 @@ export default function TabLayout() {
             title: 'Subscription',
             tabBarIcon: ({ color }) => (
               <TabBarIcon
-                name='cube'
+                name='subscriptions'
                 color={color}
               />
-            )
+            ),
           }}
         />
         <Tabs.Screen
@@ -92,14 +90,13 @@ export default function TabLayout() {
             title: 'User',
             tabBarIcon: ({ color }) => (
               <TabBarIcon
-                name='user'
+                name='person'
                 color={color}
               />
-            )
+            ),
           }}
         />
       </Tabs>
     </LinearGradient>
-  )
+  );
 }
-

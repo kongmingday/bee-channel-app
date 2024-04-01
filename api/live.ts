@@ -1,4 +1,4 @@
-import { LiveInfo } from "@/types/live";
+import { LiveInfo } from "@/.expo/types/live";
 import { get, post, del, put } from "@/utils/common/fetchUtil";
 
 const serviceName = process.env.NEXT_PUBLIC_LIVE_SERVICE

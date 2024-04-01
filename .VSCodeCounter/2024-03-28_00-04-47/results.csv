@@ -1,0 +1,56 @@
+"filename", "language", "Markdown", "TypeScript", "JSON with Comments", "JSON", "JavaScript", "TypeScript JSX", "Properties", "comment", "blank", "total"
+"d:\CodeData\Project\bee-channel-app\.env", "Properties", 0, 0, 0, 0, 0, 0, 15, 0, 2, 17
+"d:\CodeData\Project\bee-channel-app\README.md", "Markdown", 407, 0, 0, 0, 0, 0, 0, 0, 2, 409
+"d:\CodeData\Project\bee-channel-app\api\auth.ts", "TypeScript", 0, 20, 0, 0, 0, 0, 0, 0, 5, 25
+"d:\CodeData\Project\bee-channel-app\api\checkcode.ts", "TypeScript", 0, 8, 0, 0, 0, 0, 0, 0, 4, 12
+"d:\CodeData\Project\bee-channel-app\api\live.ts", "TypeScript", 0, 21, 0, 0, 0, 0, 0, 0, 10, 31
+"d:\CodeData\Project\bee-channel-app\api\media.ts", "TypeScript", 0, 104, 0, 0, 0, 0, 0, 0, 26, 130
+"d:\CodeData\Project\bee-channel-app\api\order.ts", "TypeScript", 0, 8, 0, 0, 0, 0, 0, 0, 3, 11
+"d:\CodeData\Project\bee-channel-app\api\upload.ts", "TypeScript", 0, 24, 0, 0, 0, 0, 0, 0, 7, 31
+"d:\CodeData\Project\bee-channel-app\api\user.ts", "TypeScript", 0, 34, 0, 0, 0, 0, 0, 0, 8, 42
+"d:\CodeData\Project\bee-channel-app\app.json", "JSON", 0, 0, 0, 43, 0, 0, 0, 0, 2, 45
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\_layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 41, 0, 0, 5, 46
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\search.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 15, 0, 0, 2, 17
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\video-play\[videoId].tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 132, 0, 0, 7, 139
+"d:\CodeData\Project\bee-channel-app\app\(tabs)\_layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 99, 0, 1, 6, 106
+"d:\CodeData\Project\bee-channel-app\app\(tabs)\index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 17, 0, 0, 2, 19
+"d:\CodeData\Project\bee-channel-app\app\(tabs)\subscription.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 22, 0, 0, 3, 25
+"d:\CodeData\Project\bee-channel-app\app\(tabs)\user.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 116, 0, 0, 9, 125
+"d:\CodeData\Project\bee-channel-app\app\+html.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 24, 0, 10, 5, 39
+"d:\CodeData\Project\bee-channel-app\app\+not-found.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 39, 0, 0, 6, 45
+"d:\CodeData\Project\bee-channel-app\app\_layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 91, 0, 4, 12, 107
+"d:\CodeData\Project\bee-channel-app\app\login-modal.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 212, 0, 0, 8, 220
+"d:\CodeData\Project\bee-channel-app\app\modal.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 33, 0, 1, 5, 39
+"d:\CodeData\Project\bee-channel-app\babel.config.js", "JavaScript", 0, 0, 0, 0, 7, 0, 0, 0, 1, 8
+"d:\CodeData\Project\bee-channel-app\components\EditScreenInfo.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 70, 0, 0, 8, 78
+"d:\CodeData\Project\bee-channel-app\components\ExtendModel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 69, 0, 0, 4, 73
+"d:\CodeData\Project\bee-channel-app\components\ExternalLink.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 21, 0, 3, 2, 26
+"d:\CodeData\Project\bee-channel-app\components\FlatListComponent.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 32, 0, 0, 3, 35
+"d:\CodeData\Project\bee-channel-app\components\HomeScreen.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 323, 0, 0, 11, 334
+"d:\CodeData\Project\bee-channel-app\components\SearchScreen.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 365, 0, 0, 26, 391
+"d:\CodeData\Project\bee-channel-app\components\StyledText.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 4, 0, 0, 2, 6
+"d:\CodeData\Project\bee-channel-app\components\SubscriptionScreen.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 163, 0, 0, 8, 171
+"d:\CodeData\Project\bee-channel-app\components\Themed.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 262, 0, 0, 27, 289
+"d:\CodeData\Project\bee-channel-app\components\Toast.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 23, 0, 0, 3, 26
+"d:\CodeData\Project\bee-channel-app\components\UserScreen.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 216, 0, 0, 12, 228
+"d:\CodeData\Project\bee-channel-app\components\VideoAssembly.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 219, 0, 0, 9, 228
+"d:\CodeData\Project\bee-channel-app\components\VideoPage.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 582, 0, 2, 18, 602
+"d:\CodeData\Project\bee-channel-app\components\__tests__\StyledText-test.js", "JavaScript", 0, 0, 0, 0, 7, 0, 0, 0, 4, 11
+"d:\CodeData\Project\bee-channel-app\components\useClientOnlyValue.ts", "TypeScript", 0, 3, 0, 0, 0, 0, 0, 1, 1, 5
+"d:\CodeData\Project\bee-channel-app\components\useClientOnlyValue.web.ts", "TypeScript", 0, 8, 0, 0, 0, 0, 0, 2, 3, 13
+"d:\CodeData\Project\bee-channel-app\components\useColorScheme.ts", "TypeScript", 0, 1, 0, 0, 0, 0, 0, 0, 1, 2
+"d:\CodeData\Project\bee-channel-app\components\useColorScheme.web.ts", "TypeScript", 0, 3, 0, 0, 0, 0, 0, 5, 1, 9
+"d:\CodeData\Project\bee-channel-app\constants\Colors.ts", "TypeScript", 0, 24, 0, 0, 0, 0, 0, 0, 3, 27
+"d:\CodeData\Project\bee-channel-app\package.json", "JSON", 0, 0, 0, 70, 0, 0, 0, 0, 1, 71
+"d:\CodeData\Project\bee-channel-app\store\assembly\appAssembly.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 8, 0, 0, 2, 10
+"d:\CodeData\Project\bee-channel-app\store\hook.ts", "TypeScript", 0, 124, 0, 0, 0, 0, 0, 0, 12, 136
+"d:\CodeData\Project\bee-channel-app\store\index.ts", "TypeScript", 0, 17, 0, 0, 0, 0, 0, 0, 3, 20
+"d:\CodeData\Project\bee-channel-app\store\slices\appSlice.ts", "TypeScript", 0, 21, 0, 0, 0, 0, 0, 2, 6, 29
+"d:\CodeData\Project\bee-channel-app\store\slices\chatSlice.ts", "TypeScript", 0, 48, 0, 0, 0, 0, 0, 2, 6, 56
+"d:\CodeData\Project\bee-channel-app\store\slices\searchSlice.ts", "TypeScript", 0, 37, 0, 0, 0, 0, 0, 2, 6, 45
+"d:\CodeData\Project\bee-channel-app\tailwind.config.js", "JavaScript", 0, 0, 0, 0, 11, 0, 0, 1, 1, 13
+"d:\CodeData\Project\bee-channel-app\tsconfig.json", "JSON with Comments", 0, 0, 17, 0, 0, 0, 0, 0, 1, 18
+"d:\CodeData\Project\bee-channel-app\utils\common\calculateUtil.ts", "TypeScript", 0, 45, 0, 0, 0, 0, 0, 0, 6, 51
+"d:\CodeData\Project\bee-channel-app\utils\common\fetchUtil.ts", "TypeScript", 0, 66, 0, 0, 0, 0, 0, 1, 12, 79
+"d:\CodeData\Project\bee-channel-app\utils\common\tokenUtils.ts", "TypeScript", 0, 41, 0, 0, 0, 0, 0, 0, 13, 54
+"Total", "-", 407, 657, 17, 113, 25, 3198, 15, 37, 355, 4824

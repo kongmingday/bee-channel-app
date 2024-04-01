@@ -1,5 +1,4 @@
-import { AuthInfo, JwtPayloadExt } from '@/.expo/types/auth';
-import { jwtDecode } from 'jwt-decode';
+import { getUserInfo as getUserInfoApi } from '@/api/user';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -7,7 +6,11 @@ export const AUTH_INFO = 'AUTH_INFO';
 export const AUTH_TOKEN = 'AUTH_TOKEN';
 export const USER_INFO = 'USER_INFO';
 
-export const setUserInfo = (value: string) => {
+export const removeUserInfo = () => {
+  removeItem(USER_INFO);
+};
+
+export const setUserInfo = (value: any) => {
   setItem(USER_INFO, value);
 };
 
@@ -33,6 +36,7 @@ export const getAuthToken = () => {
 
 export const setAuthToken = (value: any) => {
   setItem(AUTH_TOKEN, `Bearer ${value}`);
+  getUserInfoApi();
 };
 
 export const removeItem = (key: string) => {

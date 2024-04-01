@@ -17,10 +17,11 @@ import { getSubscription } from '@/api/user';
 import { UserInfo } from '@/.expo/types/auth';
 import { FlatList } from 'react-native';
 import { changeDeriveId } from '@/store/slices/chatSlice';
+import { LoadingComponent, NoMoreDataComponent } from './FlatListComponent';
 
 export const SubscriptionAuthorList = () => {
   const { data, isRefreshing, fetchData, refreshPage } =
-    useFetchDataPage<UserInfo>(getSubscription, undefined, 6);
+    useFetchDataPage<UserInfo>(getSubscription, false, undefined, 6);
 
   return (
     <BlurView
@@ -135,8 +136,15 @@ export const SubscriptionTabRenderItem = (props: {
 };
 
 export const SubscriptionVideoList = () => {
-  const { data, isRefreshing, fetchData, refreshPage } =
-    useFetchDataPage<Video>(getSubscriptionVideoList);
+  const {
+    data,
+    dataTotal,
+    isLoading,
+    isNoMore,
+    isRefreshing,
+    fetchData,
+    refreshPage,
+  } = useFetchDataPage<Video>(getSubscriptionVideoList);
 
   return (
     <TransparentView className='w-full flex-1'>
@@ -154,8 +162,6 @@ export const SubscriptionVideoList = () => {
         onEndReached={() => {
           fetchData();
         }}
-        ListHeaderComponent={<TransparentView className='h-2' />}
-        ListFooterComponent={<TransparentView className='h-4' />}
         renderItem={({ item, index }) => {
           return (
             <SubscriptionTabRenderItem
@@ -163,6 +169,26 @@ export const SubscriptionVideoList = () => {
               index={index}
             />
           );
+        }}
+        ListHeaderComponent={<TransparentView className='h-2' />}
+        ListEmptyComponent={
+          isNoMore && dataTotal > 0 ? (
+            <NoMoreDataComponent />
+          ) : (
+            <TransparentView className='p-1' />
+          )
+        }
+        ListFooterComponent={
+          isNoMore ? (
+            <NoMoreDataComponent />
+          ) : isLoading ? (
+            <LoadingComponent />
+          ) : (
+            <TransparentView className='p-1' />
+          )
+        }
+        ItemSeparatorComponent={() => {
+          return <TransparentView className='h-2' />;
         }}
       />
     </TransparentView>

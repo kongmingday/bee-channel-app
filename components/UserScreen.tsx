@@ -1,24 +1,27 @@
 import { FlashList } from '@shopify/flash-list';
-import { MaterialIcon, Text, TransparentView, View } from './Themed';
+import {
+  MaterialIcon,
+  MaterialIconType,
+  Text,
+  TransparentView,
+} from './Themed';
 import { Feather } from '@expo/vector-icons';
 import 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { MotiView } from 'moti';
 import { Image } from 'expo-image';
 import { useState, useRef, useEffect } from 'react';
-import { FlatList, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 import clsx from 'clsx';
 import { BlurView } from 'expo-blur';
 import { buttonColor } from '@/constants/Colors';
-import { PageParams } from '@/.expo/types';
 import {
   getHistoryVideoPage,
   getLikedVideoPage,
   getWatchLaterVideoPage,
 } from '@/api/media';
-import { SimpleMedia, Video } from '@/.expo/types/media';
+import { SimpleMedia } from '@/.expo/types/media';
 import { PATH_CONSTANTS } from '@/.expo/types/constant';
-import { UserAreaType } from '@/.expo/types/enum';
 import {
   FetchDataPageReturn,
   useAppDispatch,
@@ -27,6 +30,7 @@ import {
 import { router } from 'expo-router';
 import { changeDeriveId } from '@/store/slices/chatSlice';
 import { LoadingComponent, NoMoreDataComponent } from './FlatListComponent';
+import { removeAuthToken, removeUserInfo } from '@/utils/common/tokenUtils';
 
 const UserTabRenderItem = (props: { item: SimpleMedia; index: number }) => {
   const { item, index } = props;
@@ -132,17 +136,17 @@ export const SelectionArea = () => {
   const actionArea = [
     {
       name: 'Liked',
-      icons: <MaterialIcon name='star-border' />,
+      iconsName: 'star-border',
       fetchData: getLikedVideoPage,
     },
     {
       name: 'Watch Later',
-      icons: <MaterialIcon name='access-time' />,
+      iconsName: 'access-time',
       fetchData: getWatchLaterVideoPage,
     },
     {
       name: 'History',
-      icons: <MaterialIcon name='history' />,
+      iconsName: 'history',
       fetchData: getHistoryVideoPage,
     },
   ];
@@ -154,9 +158,8 @@ export const SelectionArea = () => {
   };
 
   const { setFetchFunction, setProcessState, ...other } = useFetchDataPage<any>(
-    () => {
-      actionArea[selectKey].fetchData;
-    },
+    actionArea[selectKey].fetchData,
+    false,
     processData,
   );
 
@@ -170,9 +173,9 @@ export const SelectionArea = () => {
   }, [selectKey]);
 
   return (
-    <TransparentView className='flex-1 w-full mt-3'>
+    <TransparentView className='flex-1 w-full mt-1'>
       <BlurView
-        className='flex-row rounded-full mx-6 py-3 overflow-hidden '
+        className='flex-row rounded-full mx-3 overflow-hidden '
         intensity={80}>
         <MotiView
           ref={motiRef}
@@ -182,7 +185,7 @@ export const SelectionArea = () => {
           onLayout={(event) => {
             motiRef.current = event.nativeEvent.layout.width;
           }}
-          className='w-1/3 absolute h-10 rounded-full'
+          className='w-1/3 absolute h-full rounded-full'
           style={{
             backgroundColor: buttonColor,
           }}
@@ -190,12 +193,19 @@ export const SelectionArea = () => {
         {actionArea.map((item, index) => (
           <Pressable
             key={item.name}
-            className='flex-1 items-center bg-transparent'
+            className='flex-row flex-1 py-3 justify-center items-center bg-transparent'
+            style={{
+              columnGap: 5,
+            }}
             onPress={() => {
               setSelectKey(index);
             }}>
+            <MaterialIcon
+              name={item.iconsName as MaterialIconType}
+              color={selectKey === index ? '#fff' : undefined}
+            />
             <Text
-              className={clsx('text-xs ', {
+              className={clsx('text-sm ', {
                 'text-white': selectKey === index,
               })}>
               {item.name}
@@ -211,18 +221,54 @@ export const SelectionArea = () => {
 };
 
 export const UserTabActionArea = () => {
+  const tabMap = [
+    {
+      iconsName: 'live-tv',
+      tabName: 'Videos',
+      onPress: () => {
+        router.push('/(no-direct)/personal/video');
+      },
+    },
+    {
+      iconsName: 'video-collection',
+      tabName: 'Collection',
+      onPress: () => {
+        router.push('/(no-direct)/personal/collection');
+      },
+    },
+    {
+      iconsName: 'logout',
+      tabName: 'Logout',
+      onPress: () => {
+        removeUserInfo();
+        removeAuthToken();
+      },
+    },
+  ];
+
   return (
     <TransparentView
       className='flex-row justify-around'
       style={{ gap: 20 }}>
-      {[0, 1, 2].map((item) => (
-        <BlurView
-          key={item}
-          className='px-5 items-center rounded-lg overflow-hidden py-1'
-          intensity={80}>
-          <Text className='text-lg'>14</Text>
-          <Text className=' text-lg text-gray-400'>videos</Text>
-        </BlurView>
+      {tabMap.map((item) => (
+        <Pressable
+          onPress={item.onPress}
+          key={item.tabName}>
+          <BlurView
+            className='px-3 flex-row items-center rounded-lg overflow-hidden py-3'
+            style={{
+              columnGap: 10,
+            }}
+            intensity={80}>
+            <MaterialIcon
+              name={item.iconsName as MaterialIconType}
+              size={25}
+            />
+            <TransparentView className='items-center'>
+              <Text className=' text-base '>{item.tabName}</Text>
+            </TransparentView>
+          </BlurView>
+        </Pressable>
       ))}
     </TransparentView>
   );

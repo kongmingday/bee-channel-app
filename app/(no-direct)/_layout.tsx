@@ -35,6 +35,18 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name='personal/video'
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='personal/collection'
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='personal/information'
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
             name='video-play/[videoId]'
             options={{ headerShown: false }}
           />

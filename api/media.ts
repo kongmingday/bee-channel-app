@@ -65,19 +65,27 @@ export const commitComment = (data: CommitParam) => {
   return post(`/${serviceName}/comment`, data);
 };
 
-export const getPersonalVideoList = (pageNo: number, pageSize: number) => {
-  return get(`/${serviceName}/video/personal`, { pageNo, pageSize });
+export const getPersonalVideoList = (pageParams: PageParams) => {
+  return get(`/${serviceName}/video/personal`, pageParams);
 };
 
 export const uploadVideo = (data: any) => {
   return post(`/${serviceName}/video/upload`, data);
 };
 
-export const getAuthorVideoList = (
-  authorId: string,
-  pageParams: PageParams,
-) => {
-  return get(`/${serviceName}/video/personal/${authorId}`, pageParams);
+export const getAuthorVideoList = ({
+  authorId,
+  pageNo,
+  pageSize,
+}: {
+  authorId: string;
+  pageNo: number;
+  pageSize: number;
+}) => {
+  return get(`/${serviceName}/video/personal/${authorId}`, {
+    pageNo,
+    pageSize,
+  });
 };
 
 export const getSubscriptionVideoList = (pageParams: PageParams) => {
@@ -96,8 +104,14 @@ export const getLikedVideoPage = (pageParams: PageParams) => {
   return get(`/${serviceName}/like`, pageParams);
 };
 
-export const getVideoByPlayListId = (playListId: string) => {
-  return get(`/${serviceName}/playList/${playListId}`);
+export const getVideoByPlayListId = ({
+  playListId,
+  pageParams,
+}: {
+  playListId: string;
+  pageParams: PageParams;
+}) => {
+  return get(`/${serviceName}/playList/${playListId}`, pageParams);
 };
 
 export const getWatchLaterVideoPage = (pageParams: PageParams) => {
