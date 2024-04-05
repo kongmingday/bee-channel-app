@@ -1,7 +1,7 @@
 import { NotTabView } from '@/components/CommonView';
 import { Text } from '@/components/Themed';
 import { InformationList } from '@/components/InformationScreen';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { AllUserInfo } from '@/.expo/types/auth';
 import { getUserInfo } from '@/api/user';
 import { useFocusEffect } from 'expo-router';

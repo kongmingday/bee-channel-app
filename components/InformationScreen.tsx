@@ -1,7 +1,7 @@
 import { BlurView } from 'expo-blur';
 import { TransparentView, FeatherIcon, Text } from './Themed';
 import { ReactNode, useRef, useState } from 'react';
-import { Avatar, Button } from '@rneui/base';
+import { Avatar } from '@rneui/base';
 import { ScrollView } from 'moti';
 import { dateFormat } from '@/utils/common/calculateUtil';
 import {
