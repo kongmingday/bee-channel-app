@@ -49,7 +49,8 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'expo-router';
 import { subscribeAction } from '@/api/user';
 import { favoriteDataPackaging } from '@/utils/common/calculateUtil';
-import { CollectionDialog } from './ExtendModal';
+import { AddCollectionDialog } from './ExtendModal';
+import { RecommendVideoList } from './VideoAssembly';
 
 export const VideoPageDetail = (props: {
 	videoInfo?: SimpleMedia;
@@ -89,8 +90,6 @@ export const VideoPageDetail = (props: {
 			}
 		});
 	};
-
-	const handleCollectionPress = () => {};
 
 	return (
 		<TransparentView
@@ -208,10 +207,9 @@ export const VideoPageDetail = (props: {
 					}}>
 					<MaterialIcon name='star-border' />
 				</BaseButton>
-				<CollectionDialog visibleState={[isDialogVisible, setDialogState]} />
+				<AddCollectionDialog visibleState={[isDialogVisible, setDialogState]} />
 			</TransparentView>
-			{/* TODO RECOMMENDATION */}
-			{/* <SimpleVideoList /> */}
+			<RecommendVideoList />
 		</TransparentView>
 	);
 };

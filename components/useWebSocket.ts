@@ -21,7 +21,6 @@ export const useWebSocket = (
 		target.onclose = onClose;
 		setWebSocket(target);
 		dispatch(setWebSocketGlobal(target));
-		console.log(target);
 		return () => {
 			webSocket?.close();
 		};

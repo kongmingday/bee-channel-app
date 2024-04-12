@@ -1,7 +1,12 @@
+import { PageParams } from '@/.expo/types';
 import { LiveInfo } from '@/.expo/types/live';
-import { get, post, del, put } from '@/utils/common/fetchUtil';
+import { get, post, del } from '@/utils/common/fetchUtil';
 
 const serviceName = process.env.EXPO_PUBLIC_LIVE_SERVICE;
+
+export const getActiveLivePage = (pageParams: PageParams) => {
+	return get(`/${serviceName}/process`, pageParams);
+};
 
 export const getPersonalLicense = () => {
 	return get(`/${serviceName}/process/license`);

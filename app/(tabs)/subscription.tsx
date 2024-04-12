@@ -1,4 +1,3 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { Text, TransparentView } from '@/components/Themed';
 import {
 	SubscriptionAuthorList,
@@ -11,7 +10,7 @@ import { UserInfo } from '@/.expo/types/auth';
 import { useFocusEffect } from 'expo-router';
 import { getUserInfo } from '@/api/user';
 import { changeUserInfo } from '@/store/slices/appSlice';
-import { LoginScreen } from '@/components/CommonView';
+import { BackgroundView, LoginScreen } from '@/components/CommonView';
 import { setProfile, setUsername } from '@/store/slices/liveSlice';
 
 export default function SubscriptionScreen() {
@@ -35,16 +34,15 @@ export default function SubscriptionScreen() {
 	return (
 		<TransparentView className='flex-1 bg-transparent'>
 			{userInfo ? (
-				<LinearGradient
-					colors={['#e9defa', '#ace0f9']}
-					className='flex-1 px-4'
+				<BackgroundView
+					className='flex-1 px-4 pt-4'
 					style={{
 						paddingBottom: tabBarHeight,
 					}}>
-					<Text className='text-xl my-4'>Subscription</Text>
+					{/* <Text className='text-xl my-4'>Subscription</Text> */}
 					<SubscriptionAuthorList />
 					<SubscriptionVideoList />
-				</LinearGradient>
+				</BackgroundView>
 			) : (
 				<LoginScreen />
 			)}

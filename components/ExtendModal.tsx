@@ -11,7 +11,6 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
 import BottomSheet, {
 	BottomSheetBackdrop,
 	BottomSheetModal,
@@ -32,15 +31,22 @@ import { router } from 'expo-router';
 import { UploadUserInfo } from '@/.expo/types/auth';
 import * as ImagePicker from 'expo-image-picker';
 import { Avatar, Dialog } from '@rneui/themed';
-import { Platform } from 'react-native';
+import { Platform, TextInput } from 'react-native';
 import { BlurView } from 'expo-blur';
 import {
+	buildPlayList,
+	deleteFromPlayList,
+	deletePlayList,
 	getPlayList,
 	getVideoInPlayList,
+	updatePlayList,
 	updateVideoInPlayList,
 } from '@/api/media';
 import { useAppSelector } from '@/store/hook';
 import { PlayList, PlayVideoList } from '@/.expo/types/media';
+import { BackgroundView } from './CommonView';
+import { handleShowToast } from '@/store/assembly/appAssembly';
+import { useDispatch } from 'react-redux';
 
 export const ExtendModal = forwardRef(
 	(
@@ -80,10 +86,7 @@ export const ExtendModal = forwardRef(
 					maxDynamicContentSize={modalHeight || 600}
 					backgroundComponent={() => {
 						return (
-							<LinearGradient
-								colors={['#e9defa', '#ace0f9']}
-								className='h-full w-full bottom-0 absolute rounded-t-[20]'
-							/>
+							<BackgroundView className='h-full w-full bottom-0 absolute rounded-t-[20]' />
 						);
 					}}
 					handleIndicatorStyle={{
@@ -152,10 +155,7 @@ export const ExtendBottomSheet = forwardRef(
 				backdropComponent={BackdropComponent}
 				backgroundComponent={() => {
 					return (
-						<LinearGradient
-							colors={['#e9defa', '#ace0f9']}
-							className='h-full w-full bottom-0 absolute rounded-t-[20]'
-						/>
+						<BackgroundView className='h-full w-full bottom-0 absolute rounded-t-[20]' />
 					);
 				}}
 				handleIndicatorStyle={{
@@ -177,7 +177,6 @@ export const ExtendBottomSheet = forwardRef(
 const updateUserInfo = (date: UploadUserInfo) => {
 	uploadUserInfo(date).then(response => {
 		const { result } = response;
-		console.log(result);
 		if (result) {
 			router.replace('/(no-direct)/personal/information');
 		}
@@ -478,7 +477,7 @@ export const ChangeIntroductionBottomSheet = (props: {
 
 export type ExtendPlayList = PlayList & { checked: boolean };
 
-export const CollectionDialog = (props: {
+export const AddCollectionDialog = (props: {
 	visibleState: [boolean, Dispatch<SetStateAction<boolean>>];
 }) => {
 	const [isVisible, setVisibleState] = props.visibleState;
@@ -513,8 +512,6 @@ export const CollectionDialog = (props: {
 			.map(item => ({
 				playListId: item.id,
 			}));
-
-		console.log(changeTarget);
 
 		if (changeTarget.length > 0) {
 			updateVideoInPlayList(deriveId, changeTarget);
@@ -562,9 +559,7 @@ export const CollectionDialog = (props: {
 			}}
 			isVisible={isVisible}
 			onBackdropPress={onBackdropPress}>
-			<LinearGradient
-				colors={['#e9defa', '#ace0f9']}
-				className='p-4'>
+			<BackgroundView className='p-4'>
 				<Dialog.Title
 					title='Add to collection'
 					titleStyle={{
@@ -596,7 +591,262 @@ export const CollectionDialog = (props: {
 					}}>
 					<Text className='font-semibold'>Save</Text>
 				</BaseBlurButton>
-			</LinearGradient>
+			</BackgroundView>
+		</Dialog>
+	);
+};
+
+export const CreateCollectionDialog = (props: {
+	visibleState: [boolean, Dispatch<SetStateAction<boolean>>];
+}) => {
+	const [isVisible, setVisibleState] = props.visibleState;
+	const [newName, setNewName] = useState<string>('');
+	const onBackdropPress = () => {
+		setVisibleState(!isVisible);
+	};
+	const dispatch = useDispatch();
+
+	const onSavePress = () => {
+		if (newName.length > 50 || newName.length <= 0) {
+			handleShowToast(dispatch, 'The newName is invalid');
+			return;
+		}
+		buildPlayList(newName).then(response => {
+			const { code } = response;
+			if (code === 200) {
+				handleShowToast(dispatch, 'Create a collection successfully');
+				onBackdropPress();
+			} else {
+				handleShowToast(dispatch, 'Create a collection unsuccessfully');
+			}
+		});
+	};
+
+	return (
+		<Dialog
+			overlayStyle={{
+				padding: 0,
+				backgroundColor: 'transparent',
+				borderRadius: 20,
+				overflow: 'hidden',
+			}}
+			isVisible={isVisible}
+			onBackdropPress={onBackdropPress}>
+			<BackgroundView className='p-4'>
+				<Dialog.Title
+					title='Create a collection'
+					titleStyle={{
+						color: secondaryColor,
+					}}
+				/>
+				<BlurView
+					intensity={80}
+					className='rounded-2xl overflow-hidden'>
+					<TextInput
+						placeholder='Please input collection name'
+						className='p-2'
+						value={newName}
+						onChangeText={setNewName}
+					/>
+				</BlurView>
+				<BaseBlurButton
+					containerStyle={{
+						width: '60%',
+						alignSelf: 'center',
+						marginTop: 10,
+					}}
+					onPress={onSavePress}>
+					<Text className='font-semibold'>Save</Text>
+				</BaseBlurButton>
+			</BackgroundView>
+		</Dialog>
+	);
+};
+
+export const DeleteCollectionDialog = (props: {
+	playList: PlayList;
+	visibleState: [boolean, Dispatch<SetStateAction<boolean>>];
+}) => {
+	const { playList } = props;
+
+	const [isVisible, setVisibleState] = props.visibleState;
+	const onBackdropPress = () => {
+		setVisibleState(!isVisible);
+	};
+	const dispatch = useDispatch();
+
+	const onDeleteConfirmPress = () => {
+		deletePlayList(playList.id).then(response => {
+			const { code } = response;
+			if (code === 200) {
+				handleShowToast(dispatch, 'Delete this collection successfully');
+				onBackdropPress();
+			} else {
+				handleShowToast(dispatch, 'Delete this collection unsuccessfully');
+			}
+		});
+	};
+
+	return (
+		<Dialog
+			overlayStyle={{
+				padding: 0,
+				backgroundColor: 'transparent',
+				borderRadius: 20,
+				overflow: 'hidden',
+			}}
+			isVisible={isVisible}
+			onBackdropPress={onBackdropPress}>
+			<BackgroundView className='p-4'>
+				<Dialog.Title
+					title='Delete this collection'
+					titleStyle={{
+						color: secondaryColor,
+					}}
+				/>
+				<Text className='text-lg'>
+					Are you sure you want to delete this collection?
+				</Text>
+				<BaseBlurButton
+					containerStyle={{
+						width: '60%',
+						alignSelf: 'center',
+						marginTop: 10,
+					}}
+					onPress={onDeleteConfirmPress}>
+					<Text className='font-semibold'>Yes</Text>
+				</BaseBlurButton>
+			</BackgroundView>
+		</Dialog>
+	);
+};
+
+export const UpdateCollectionDialog = (props: {
+	playList: PlayList;
+	visibleState: [boolean, Dispatch<SetStateAction<boolean>>];
+}) => {
+	const { playList } = props;
+	const [isVisible, setVisibleState] = props.visibleState;
+	const [newName, setNewName] = useState<string>('');
+	const onBackdropPress = () => {
+		setVisibleState(!isVisible);
+	};
+	const dispatch = useDispatch();
+
+	const onSavePress = () => {
+		if (newName.length > 50 || newName.length <= 0) {
+			handleShowToast(dispatch, 'The newName is invalid');
+			return;
+		}
+		updatePlayList(playList.id, newName).then(response => {
+			const { code } = response;
+			if (code === 200) {
+				handleShowToast(dispatch, 'Update a collection successfully');
+				onBackdropPress();
+			} else {
+				handleShowToast(dispatch, 'Update a collection unsuccessfully');
+			}
+		});
+	};
+
+	return (
+		<Dialog
+			overlayStyle={{
+				padding: 0,
+				backgroundColor: 'transparent',
+				borderRadius: 20,
+				overflow: 'hidden',
+			}}
+			isVisible={isVisible}
+			onBackdropPress={onBackdropPress}>
+			<BackgroundView className='p-4'>
+				<Dialog.Title
+					title='Update a collection'
+					titleStyle={{
+						color: secondaryColor,
+					}}
+				/>
+				<BlurView
+					intensity={80}
+					className='rounded-2xl overflow-hidden'>
+					<TextInput
+						placeholder='Please input collection name'
+						className='p-2'
+						value={newName}
+						onChangeText={setNewName}
+					/>
+				</BlurView>
+				<BaseBlurButton
+					containerStyle={{
+						width: '60%',
+						alignSelf: 'center',
+						marginTop: 10,
+					}}
+					onPress={onSavePress}>
+					<Text className='font-semibold'>Save</Text>
+				</BaseBlurButton>
+			</BackgroundView>
+		</Dialog>
+	);
+};
+
+export const DeleteVideoInCollectionDialog = (props: {
+	playListId: string;
+	videoId: string;
+	visibleState: [boolean, Dispatch<SetStateAction<boolean>>];
+	filter?: (videoId: string) => any;
+}) => {
+	const { playListId, videoId, filter } = props;
+
+	const [isVisible, setVisibleState] = props.visibleState;
+	const onBackdropPress = () => {
+		setVisibleState(!isVisible);
+	};
+	const dispatch = useDispatch();
+
+	const onDeleteConfirmPress = async () => {
+		await deleteFromPlayList(playListId, videoId).then(response => {
+			const { code } = response;
+			if (code === 200) {
+				handleShowToast(dispatch, 'Delete successfully');
+				filter && filter(videoId);
+				onBackdropPress();
+			} else {
+				handleShowToast(dispatch, 'Delete unsuccessfully');
+			}
+		});
+	};
+
+	return (
+		<Dialog
+			overlayStyle={{
+				padding: 0,
+				backgroundColor: 'transparent',
+				borderRadius: 20,
+				overflow: 'hidden',
+			}}
+			isVisible={isVisible}
+			onBackdropPress={onBackdropPress}>
+			<BackgroundView className='p-4'>
+				<Dialog.Title
+					title='Delete this collection'
+					titleStyle={{
+						color: secondaryColor,
+					}}
+				/>
+				<Text className='text-lg'>
+					Are you sure you want to delete this video in collection?
+				</Text>
+				<BaseBlurButton
+					containerStyle={{
+						width: '60%',
+						alignSelf: 'center',
+						marginTop: 10,
+					}}
+					onPress={onDeleteConfirmPress}>
+					<Text className='font-semibold'>Yes</Text>
+				</BaseBlurButton>
+			</BackgroundView>
 		</Dialog>
 	);
 };

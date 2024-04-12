@@ -27,12 +27,21 @@ export const SubscriptionAuthorList = () => {
 		<BlurView
 			className='flex-row w-full rounded-3xl overflow-hidden'
 			intensity={80}>
+			<Text
+				onPress={() => {
+					router.push('/personal/author');
+				}}
+				className='absolute px-5 top-3 right-3 text-lg z-10'>
+				More
+			</Text>
 			<TransparentView
 				className='flex-initial py-3'
 				style={{
 					rowGap: 10,
 				}}>
-				<Text className='text-lg px-5'>Author</Text>
+				<TransparentView className='w-full flex-row'>
+					<Text className='text-lg px-5'>Author</Text>
+				</TransparentView>
 				<FlatList
 					contentContainerStyle={{
 						paddingHorizontal: 18,

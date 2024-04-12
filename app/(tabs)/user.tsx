@@ -4,7 +4,6 @@ import { Link, useFocusEffect } from 'expo-router';
 import { SelectionArea, UserTabActionArea } from '@/components/UserScreen';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
-import { LinearGradient } from 'expo-linear-gradient';
 import { getUserInfo } from '@/api/user';
 import { useCallback, useState } from 'react';
 import { UserInfo } from '@/.expo/types/auth';
@@ -12,7 +11,7 @@ import { PATH_CONSTANTS } from '@/.expo/types/constant';
 import { useWindowDimensions } from 'react-native';
 import { useAppDispatch } from '@/store/hook';
 import { changeUserInfo } from '@/store/slices/appSlice';
-import { LoginScreen } from '@/components/CommonView';
+import { BackgroundView, LoginScreen } from '@/components/CommonView';
 import { setProfile, setUsername } from '@/store/slices/liveSlice';
 
 const UserInfoScreen = (props: { userInfo?: UserInfo }) => {
@@ -21,8 +20,7 @@ const UserInfoScreen = (props: { userInfo?: UserInfo }) => {
 	const tabBarHeight = useBottomTabBarHeight();
 
 	return (
-		<LinearGradient
-			colors={['#e9defa', '#ace0f9']}
+		<BackgroundView
 			className='flex-1 pt-2 px-4'
 			style={{
 				paddingBottom: tabBarHeight,
@@ -58,7 +56,7 @@ const UserInfoScreen = (props: { userInfo?: UserInfo }) => {
 				<UserTabActionArea />
 				<SelectionArea />
 			</TransparentView>
-		</LinearGradient>
+		</BackgroundView>
 	);
 };
 

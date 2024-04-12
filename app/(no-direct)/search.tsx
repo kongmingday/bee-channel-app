@@ -1,16 +1,14 @@
-import { SearchSelector } from '@/components/SearchScreen'
-import { LinearGradient } from 'expo-linear-gradient'
+import { BackgroundView } from '@/components/CommonView';
+import { SearchSelector } from '@/components/SearchScreen';
 
 export default function SearchScreen() {
-  return (
-    <LinearGradient
-      colors={['#e9defa', '#ace0f9']}
-      className='flex-1'
-      style={{
-        paddingTop: 60
-      }}
-    >
-      <SearchSelector />
-    </LinearGradient>
-  )
+	return (
+		<BackgroundView
+			className='flex-1'
+			style={{
+				paddingTop: 60,
+			}}>
+			<SearchSelector />
+		</BackgroundView>
+	);
 }

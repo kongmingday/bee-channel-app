@@ -1,17 +1,16 @@
 import { TransparentView, PressableIcon } from '@/components/Themed';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { LinearGradient } from 'expo-linear-gradient';
-import VideoPlayer from 'expo-video-player';
 import { ResizeMode } from 'expo-av';
 import { useEffect, useRef, useState } from 'react';
 import { setStatusBarHidden } from 'expo-status-bar';
 import { Video } from 'expo-av';
 import { Dimensions } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { SimpleMedia } from '@/.expo/types/media';
 import { useDispatch } from 'react-redux';
 import { getLiveUserInfo } from '@/api/live';
 import { LiveChatContainer, LivePageDetail } from '@/components/LivePage';
+import { BackgroundView } from '@/components/CommonView';
 
 const LIVE_HOST = process.env.EXPO_PUBLIC_LIVE_ROOM_HOST;
 
@@ -31,9 +30,7 @@ export default function LivePlayScreen() {
 	}, []);
 
 	return (
-		<LinearGradient
-			colors={['#e9defa', '#ace0f9']}
-			className='flex-1 '>
+		<BackgroundView className='flex-1 '>
 			<VideoPlayer
 				videoProps={{
 					shouldPlay: false,
@@ -93,6 +90,6 @@ export default function LivePlayScreen() {
 				setVideoInfo={setVideoInfo}
 			/>
 			<LiveChatContainer />
-		</LinearGradient>
+		</BackgroundView>
 	);
 }

@@ -6,8 +6,8 @@ import {
 import { Stack } from 'expo-router';
 
 import { useColorScheme } from '@/components/useColorScheme';
-import { LinearGradient } from 'expo-linear-gradient';
 import { SearchHeader } from '@/components/SearchScreen';
+import { TransparentView } from '@/components/Themed';
 
 export default function RootLayout() {
 	return <RootLayoutNav />;
@@ -17,8 +17,8 @@ function RootLayoutNav() {
 	const colorScheme = useColorScheme();
 
 	return (
-		<LinearGradient
-			colors={['#e9defa', '#ace0f9']}
+		<TransparentView
+			// colors={['#e9defa', '#ace0f9']}
 			className='flex-1'>
 			<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
 				<Stack>
@@ -46,6 +46,10 @@ function RootLayoutNav() {
 						options={{ headerShown: false }}
 					/>
 					<Stack.Screen
+						name='personal/author'
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
 						name='video-play/[videoId]'
 						options={{ headerShown: false }}
 					/>
@@ -55,6 +59,6 @@ function RootLayoutNav() {
 					/>
 				</Stack>
 			</ThemeProvider>
-		</LinearGradient>
+		</TransparentView>
 	);
 }

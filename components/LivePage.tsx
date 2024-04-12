@@ -182,7 +182,6 @@ export const LiveChatContainer = () => {
 		if (input.length <= 0) {
 			return;
 		}
-		console.log(liveParam);
 		const liveMessage = {
 			userId: liveParam.userId,
 			profile: liveParam.profile,
