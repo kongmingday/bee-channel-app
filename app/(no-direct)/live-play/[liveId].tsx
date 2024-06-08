@@ -5,12 +5,13 @@ import { useEffect, useRef, useState } from 'react';
 import { setStatusBarHidden } from 'expo-status-bar';
 import { Video } from 'expo-av';
 import { Dimensions } from 'react-native';
-import { router } from 'expo-router';
-import { SimpleMedia } from '@/.expo/types/media';
+import { router, useLocalSearchParams } from 'expo-router';
+import { SimpleMedia } from '@/constants/media';
 import { useDispatch } from 'react-redux';
 import { getLiveUserInfo } from '@/api/live';
 import { LiveChatContainer, LivePageDetail } from '@/components/LivePage';
 import { BackgroundView } from '@/components/CommonView';
+import VideoPlayer from 'expo-video-player';
 
 const LIVE_HOST = process.env.EXPO_PUBLIC_LIVE_ROOM_HOST;
 
@@ -19,11 +20,13 @@ export default function LivePlayScreen() {
 	const videoRef = useRef<Video>(new Video({}));
 	const [videoInfo, setVideoInfo] = useState<SimpleMedia>();
 
+	const { liveId } = useLocalSearchParams();
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		const fetchVideoInfo = async () => {
-			const { result } = await getLiveUserInfo('006774');
+			const { result } = await getLiveUserInfo(liveId as string);
 			setVideoInfo(result);
 		};
 		fetchVideoInfo();
@@ -36,7 +39,7 @@ export default function LivePlayScreen() {
 					shouldPlay: false,
 					resizeMode: ResizeMode.CONTAIN,
 					source: {
-						uri: `${LIVE_HOST}/00674.flv`,
+						uri: `${LIVE_HOST}/${liveId}.flv`,
 					},
 					ref: videoRef,
 				}}

@@ -32,12 +32,9 @@ export const HomeHeader = () => {
 			style={{
 				columnGap: 5,
 			}}>
-			<Avatar
-				size={48}
-				rounded
-				source={{
-					uri: `http://192.168.25.128:9000/bee-channel/image/1.png`,
-				}}
+			<Image
+				className='w-12 h-12 rounded-full'
+				source={require('@/assets/images/logo.png')}
 			/>
 			<SearchBar
 				lightTheme

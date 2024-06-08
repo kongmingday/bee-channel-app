@@ -1,56 +1,63 @@
-import { BlurView } from 'expo-blur';
-import { Image } from 'expo-image';
-import { TransparentView, Text, BaseBlurButton, IonIcon } from './Themed';
-import { Feather } from '@expo/vector-icons';
-import { FlashList } from '@shopify/flash-list';
-import { Avatar } from '@rneui/themed';
-import { ignoreTextColor } from '@/constants/Colors';
+import { BlurView } from 'expo-blur'
+import { Image } from 'expo-image'
+import { TransparentView, Text, BaseBlurButton, IonIcon } from './Themed'
+import { Feather } from '@expo/vector-icons'
+import { FlashList } from '@shopify/flash-list'
+import { Avatar } from '@rneui/themed'
+import { ignoreTextColor } from '@/constants/Colors'
 import {
 	FetchDataPageReturn,
 	useAppDispatch,
 	useAppSelector,
 	useFetchDataPage,
-} from '@/store/hook';
+} from '@/store/hook'
 import {
 	EmptyDataComponent,
 	LoadingComponent,
 	NoMoreDataComponent,
-} from './FlatListComponent';
-import { SimpleMedia } from '@/.expo/types/media';
-import { convertNumber, dateFormat } from '@/utils/common/calculateUtil';
-import { PATH_CONSTANTS } from '@/.expo/types/constant';
-import { UserAndRelationship } from '@/.expo/types/auth';
-import { subscribeAction } from '@/api/user';
+} from './FlatListComponent'
+import { SimpleMedia } from '@/constants/media'
+import { convertNumber, dateFormat } from '@/utils/common/calculateUtil'
+import { PATH_CONSTANTS } from '@/constants/constant'
+import { AllUserInfo, UserAndRelationship } from '@/constants/auth'
+import { getUserInfo, subscribeAction } from '@/api/user'
 import {
 	Dispatch,
 	ReactElement,
 	SetStateAction,
+	useCallback,
 	useEffect,
 	useState,
-} from 'react';
-import { Pressable } from 'react-native';
-import { router } from 'expo-router';
-import { changeDeriveId } from '@/store/slices/chatSlice';
+} from 'react'
+import { Pressable } from 'react-native'
+import { router, useFocusEffect } from 'expo-router'
+import { changeDeriveId } from '@/store/slices/chatSlice'
+import { getRecommendByUser } from '@/api/media'
+import { ActiveLiveInfo } from '@/constants/live'
+import { getActiveLivePage } from '@/api/live'
+import { DeleteVideoInCollectionDialog } from './ExtendModal'
+import { handleShowToast } from '@/store/assembly/appAssembly'
 import {
-	getRecommendByUser
-} from '@/api/media';
-import { ActiveLiveInfo } from '@/.expo/types/live';
-import { getActiveLivePage } from '@/api/live';
-import { DeleteVideoInCollectionDialog } from './ExtendModal';
+	setProfile,
+	setRoomId,
+	setUserId,
+	setUsername,
+} from '@/store/slices/liveSlice'
 
 export const SimpleVideoRenderItem = (props: {
-	item: SimpleMedia;
-	index: number;
-	isFavorites?: boolean;
-	playListId?: string;
-	filter?: Dispatch<SetStateAction<any[]>>;
+	item: SimpleMedia
+	index: number
+	isFavorites?: boolean
+	playListId?: string
+	fromAuthor?: boolean
+	filter?: Dispatch<SetStateAction<any[]>>
 }) => {
-	const { item, index, playListId, isFavorites, filter } = props;
-	const [isVisible, setVisibleState] = useState<boolean>(false);
+	const { item, fromAuthor, playListId, isFavorites, filter } = props
+	const [isVisible, setVisibleState] = useState<boolean>(false)
 
 	const reset = (videoId: string) => {
-		filter && filter(pre => pre.filter(item => item.id !== videoId));
-	};
+		filter && filter((pre) => pre.filter((item) => item.id !== videoId))
+	}
 
 	return (
 		<>
@@ -77,14 +84,16 @@ export const SimpleVideoRenderItem = (props: {
 						{item.title}
 					</Text>
 					<TransparentView className='gap-y-2'>
-						<TransparentView className='flex-row items-center gap-x-2'>
-							<Feather
-								name='user'
-								className='mr-2'
-								size={18}
-							/>
-							<Text>{item.author.username}</Text>
-						</TransparentView>
+						{!fromAuthor && (
+							<TransparentView className='flex-row items-center gap-x-2'>
+								<Feather
+									name='user'
+									className='mr-2'
+									size={18}
+								/>
+								<Text>{item.author.username}</Text>
+							</TransparentView>
+						)}
 						<TransparentView className='flex-row items-center gap-x-2'>
 							<Feather
 								name='play-circle'
@@ -101,7 +110,7 @@ export const SimpleVideoRenderItem = (props: {
 				{isFavorites && (
 					<Pressable
 						onPress={() => {
-							setVisibleState(true);
+							setVisibleState(true)
 						}}>
 						<IonIcon
 							name='close'
@@ -112,30 +121,35 @@ export const SimpleVideoRenderItem = (props: {
 				)}
 			</BlurView>
 		</>
-	);
-};
+	)
+}
 
 export const SimpleAuthorRenderItem = (props: {
-	item: UserAndRelationship;
-	index: number;
-	setData: Dispatch<SetStateAction<any[]>>;
+	item: UserAndRelationship
+	index: number
+	setData: Dispatch<SetStateAction<any[]>>
 }) => {
-	const { item, index, setData } = props;
+	const { item, index, setData } = props
+	const dispatch = useAppDispatch()
 
 	const handleSubscribeChange = () => {
-		subscribeAction(item.id).then(response => {
-			if (response.result) {
-				setData((pre: any[]) => {
-					const temp = [...pre];
-					temp[index] = {
-						...temp[index],
-						hasConcern: !temp[index].hasConcern,
-					};
-					return temp;
-				});
-			}
-		});
-	};
+		subscribeAction(item.id)
+			.then((response) => {
+				if (response.result) {
+					setData((pre: any[]) => {
+						const temp = [...pre]
+						temp[index] = {
+							...temp[index],
+							hasConcern: !temp[index].hasConcern,
+						}
+						return temp
+					})
+				}
+			})
+			.catch(() => {
+				handleShowToast(dispatch, 'Pleas login first')
+			})
+	}
 
 	return (
 		<BlurView
@@ -160,14 +174,6 @@ export const SimpleAuthorRenderItem = (props: {
 					style={{
 						color: ignoreTextColor,
 					}}>
-					{convertNumber(item.subscribeCount?.toString())} fans
-				</Text>
-				<Text
-					className='text-xs'
-					numberOfLines={1}
-					style={{
-						color: ignoreTextColor,
-					}}>
 					{item.introduction}
 				</Text>
 			</TransparentView>
@@ -182,8 +188,8 @@ export const SimpleAuthorRenderItem = (props: {
 				{item.hasConcern ? 'Unsubscribe' : 'Subscribe'}
 			</BaseBlurButton>
 		</BlurView>
-	);
-};
+	)
+}
 
 export const SimpleAuthorList = () => {
 	const {
@@ -195,7 +201,7 @@ export const SimpleAuthorList = () => {
 		setData,
 		fetchData,
 		refreshPage,
-	} = useAppSelector(state => state.search.fetchUserFunction)!;
+	} = useAppSelector((state) => state.search.fetchUserFunction)!
 
 	return (
 		<TransparentView className='flex-1 px-2'>
@@ -204,7 +210,7 @@ export const SimpleAuthorList = () => {
 				showsVerticalScrollIndicator={false}
 				data={data}
 				keyExtractor={(item, index) => {
-					return index + item.id;
+					return index + item.id
 				}}
 				onEndReached={fetchData}
 				refreshing={isRefreshing}
@@ -217,7 +223,7 @@ export const SimpleAuthorList = () => {
 							index={index}
 							setData={setData}
 						/>
-					);
+					)
 				}}
 				ListHeaderComponent={<TransparentView className='h-2' />}
 				ListEmptyComponent={
@@ -237,21 +243,28 @@ export const SimpleAuthorList = () => {
 					)
 				}
 				ItemSeparatorComponent={() => {
-					return <TransparentView className='h-2' />;
+					return <TransparentView className='h-2' />
 				}}
 			/>
 		</TransparentView>
-	);
-};
+	)
+}
 
 export const SimpleVideoList = (props: {
-	fetchFunction?: FetchDataPageReturn<SimpleMedia, any>;
-	headerComponent?: ReactElement;
-	isFavorites?: boolean;
-	playListId?: string;
+	fetchFunction?: FetchDataPageReturn<SimpleMedia, any>
+	headerComponent?: ReactElement
+	isFavorites?: boolean
+	playListId?: string
+	fromAuthor?: boolean
 }) => {
-	const { fetchFunction, headerComponent, isFavorites, playListId } = props;
-	const dispatch = useAppDispatch();
+	const {
+		fromAuthor,
+		fetchFunction,
+		headerComponent,
+		isFavorites,
+		playListId,
+	} = props
+	const dispatch = useAppDispatch()
 
 	const {
 		data,
@@ -263,7 +276,7 @@ export const SimpleVideoList = (props: {
 		fetchData,
 		refreshPage,
 	} =
-		fetchFunction || useAppSelector(state => state.search.fetchVideoFunction)!;
+		fetchFunction || useAppSelector((state) => state.search.fetchVideoFunction)!
 
 	return (
 		<FlashList
@@ -273,7 +286,7 @@ export const SimpleVideoList = (props: {
 			data={data}
 			estimatedItemSize={135}
 			keyExtractor={(item, index) => {
-				return index + item.id;
+				return index + item.id
 			}}
 			onEndReached={fetchData}
 			refreshing={isRefreshing}
@@ -282,8 +295,8 @@ export const SimpleVideoList = (props: {
 				return (
 					<Pressable
 						onPress={() => {
-							dispatch(changeDeriveId(item.id));
-							router.push(`/(no-direct)/video-play/${item.id}`);
+							dispatch(changeDeriveId(item.id))
+							router.push(`/(no-direct)/video-play/${item.id}`)
 						}}>
 						<SimpleVideoRenderItem
 							isFavorites={isFavorites}
@@ -291,9 +304,10 @@ export const SimpleVideoList = (props: {
 							item={item}
 							index={index}
 							filter={setData}
+							fromAuthor={fromAuthor}
 						/>
 					</Pressable>
-				);
+				)
 			}}
 			ListHeaderComponent={
 				headerComponent || <TransparentView className='h-2' />
@@ -315,32 +329,32 @@ export const SimpleVideoList = (props: {
 				)
 			}
 			ItemSeparatorComponent={() => {
-				return <TransparentView className='h-2' />;
+				return <TransparentView className='h-2' />
 			}}
 		/>
-	);
-};
+	)
+}
 
 export const RecommendVideoList = () => {
-	const dispatch = useAppDispatch();
-	const [recommendation, setRecommendation] = useState<SimpleMedia[]>([]);
-	const [isRefreshing, setRefreshState] = useState<boolean>(false);
+	const dispatch = useAppDispatch()
+	const [recommendation, setRecommendation] = useState<SimpleMedia[]>([])
+	const [isRefreshing, setRefreshState] = useState<boolean>(false)
 
 	const fetchData = async () => {
-		setRefreshState(true);
+		setRefreshState(true)
 		await getRecommendByUser(8)
-			.then(response => {
-				const { result } = response;
-				setRecommendation(result);
+			.then((response) => {
+				const { result } = response
+				setRecommendation(result)
 			})
 			.finally(() => {
-				setRefreshState(false);
-			});
-	};
+				setRefreshState(false)
+			})
+	}
 
 	useEffect(() => {
-		fetchData();
-	}, []);
+		fetchData()
+	}, [])
 
 	return (
 		<FlashList
@@ -350,7 +364,7 @@ export const RecommendVideoList = () => {
 			data={recommendation}
 			estimatedItemSize={135}
 			keyExtractor={(item, index) => {
-				return index + item.id;
+				return index + item.id
 			}}
 			refreshing={isRefreshing}
 			onRefresh={fetchData}
@@ -358,27 +372,38 @@ export const RecommendVideoList = () => {
 				return (
 					<Pressable
 						onPress={() => {
-							dispatch(changeDeriveId(item.id));
-							router.push(`/(no-direct)/video-play/${item.id}`);
+							dispatch(changeDeriveId(item.id))
+							router.push(`/(no-direct)/video-play/${item.id}`)
 						}}>
 						<SimpleVideoRenderItem
 							item={item}
 							index={index}
 						/>
 					</Pressable>
-				);
+				)
 			}}
 			ListHeaderComponent={<TransparentView className='h-2' />}
 			ItemSeparatorComponent={() => {
-				return <TransparentView className='h-2' />;
+				return <TransparentView className='h-2' />
 			}}
 			ListFooterComponent={<TransparentView className='h-2' />}
 		/>
-	);
-};
+	)
+}
 
 export const LiveList = () => {
-	const dispatch = useAppDispatch();
+	const dispatch = useAppDispatch()
+	const [userInfo, setUserInfo] = useState<AllUserInfo>({} as AllUserInfo)
+
+	useFocusEffect(
+		useCallback(() => {
+			const getInfo = async () => {
+				const { result: userInfo } = await getUserInfo()
+				setUserInfo(userInfo)
+			}
+			getInfo()
+		}, []),
+	)
 
 	const {
 		data,
@@ -391,8 +416,8 @@ export const LiveList = () => {
 	} = useFetchDataPage<SimpleMedia & ActiveLiveInfo, SimpleMedia, any>(
 		getActiveLivePage,
 		true,
-		data => {
-			const convert = data.map(item => {
+		(data) => {
+			const convert = data.map((item) => {
 				return {
 					...item,
 					coverPath: item.cover,
@@ -401,11 +426,11 @@ export const LiveList = () => {
 						username: item.username,
 						profile: item.profile,
 					} as UserAndRelationship,
-				};
-			});
-			return convert;
+				}
+			})
+			return convert
 		},
-	);
+	)
 
 	return (
 		<FlashList
@@ -415,7 +440,7 @@ export const LiveList = () => {
 			data={data}
 			estimatedItemSize={135}
 			keyExtractor={(item, index) => {
-				return index + item.id;
+				return index + item.id
 			}}
 			onEndReached={fetchData}
 			refreshing={isRefreshing}
@@ -424,15 +449,19 @@ export const LiveList = () => {
 				return (
 					<Pressable
 						onPress={() => {
-							dispatch(changeDeriveId(item.id));
-							router.push(`/(no-direct)/video-play/${item.id}`);
+							dispatch(changeDeriveId(item.id))
+							dispatch(setRoomId(item.id))
+							dispatch(setUserId(userInfo.id))
+							dispatch(setProfile(userInfo.profile))
+							dispatch(setUsername(userInfo.username))
+							router.push(`/(no-direct)/live-play/${item.id}`)
 						}}>
 						<SimpleVideoRenderItem
 							item={item}
 							index={index}
 						/>
 					</Pressable>
-				);
+				)
 			}}
 			ListHeaderComponent={<TransparentView className='h-2' />}
 			ListEmptyComponent={
@@ -444,7 +473,7 @@ export const LiveList = () => {
 			}
 			ListFooterComponent={
 				isNoMore ? (
-					<EmptyDataComponent />
+					<NoMoreDataComponent />
 				) : isLoading ? (
 					<LoadingComponent />
 				) : (
@@ -452,8 +481,8 @@ export const LiveList = () => {
 				)
 			}
 			ItemSeparatorComponent={() => {
-				return <TransparentView className='h-2' />;
+				return <TransparentView className='h-2' />
 			}}
 		/>
-	);
-};
+	)
+}

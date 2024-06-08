@@ -1,5 +1,5 @@
-import { PageParams } from '@/.expo/types';
-import { LiveInfo } from '@/.expo/types/live';
+import { PageParams } from '@/constants';
+import { LiveInfo } from '@/constants/live';
 import { get, post, del } from '@/utils/common/fetchUtil';
 
 const serviceName = process.env.EXPO_PUBLIC_LIVE_SERVICE;

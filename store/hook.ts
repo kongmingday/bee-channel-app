@@ -1,7 +1,7 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from './index';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { PageParams } from '@/.expo/types';
+import { PageParams } from '@/constants';
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
@@ -114,9 +114,7 @@ export const useFetchDataPage = <T, R = any, P = any>(
 	};
 
 	useEffect(() => {
-		if (dataTotal > 0) {
-			refreshPage();
-		}
+		refreshPage();
 	}, [fetchTemplate]);
 
 	useEffect(() => {

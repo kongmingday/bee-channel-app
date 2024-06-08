@@ -1,6 +1,6 @@
 import { getPlayList } from '@/api/media';
 import { NotTabView } from '@/components/CommonView';
-import { PlayList } from '@/.expo/types/media';
+import { PlayList } from '@/constants/media';
 import { IonIcon, Text, TransparentView } from '@/components/Themed';
 import { useEffect, useState } from 'react';
 import { CollectionList } from '@/components/CollectionScreen';

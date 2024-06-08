@@ -1,0 +1,41 @@
+"filename", "language", "JSON", "TypeScript", "TypeScript JSX", "comment", "blank", "total"
+"d:\CodeData\Project\bee-channel-app\api\live.ts", "TypeScript", 0, 4, 0, 0, -1, 3
+"d:\CodeData\Project\bee-channel-app\api\media.ts", "TypeScript", 0, 34, 0, 0, 3, 37
+"d:\CodeData\Project\bee-channel-app\api\user.ts", "TypeScript", 0, 3, 0, 0, 1, 4
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\_layout.tsx", "TypeScript JSX", 0, 0, 22, 1, 0, 23
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\live-play\[liveId].tsx", "TypeScript JSX", 0, 0, 92, 0, 7, 99
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\personal\author.tsx", "TypeScript JSX", 0, 0, 24, 0, 4, 28
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\personal\collection.tsx", "TypeScript JSX", 0, 0, 64, 0, 5, 69
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\personal\information.tsx", "TypeScript JSX", 0, 0, 27, 0, 4, 31
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\personal\userInfo\[targetId].tsx", "TypeScript JSX", 0, 0, 40, 1, 4, 45
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\personal\video.tsx", "TypeScript JSX", 0, 0, 32, 0, 3, 35
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\search.tsx", "TypeScript JSX", 0, 0, -2, 0, 0, -2
+"d:\CodeData\Project\bee-channel-app\app\(no-direct)\video-play\[videoId].tsx", "TypeScript JSX", 0, 0, 6, 0, -1, 5
+"d:\CodeData\Project\bee-channel-app\app\(tabs)\_layout.tsx", "TypeScript JSX", 0, 0, -4, 0, -1, -5
+"d:\CodeData\Project\bee-channel-app\app\(tabs)\index.tsx", "TypeScript JSX", 0, 0, -1, 0, 0, -1
+"d:\CodeData\Project\bee-channel-app\app\(tabs)\subscription.tsx", "TypeScript JSX", 0, 0, 25, 0, 1, 26
+"d:\CodeData\Project\bee-channel-app\app\(tabs)\user.tsx", "TypeScript JSX", 0, 0, -25, 0, -1, -26
+"d:\CodeData\Project\bee-channel-app\app\_layout.tsx", "TypeScript JSX", 0, 0, -3, 0, 0, -3
+"d:\CodeData\Project\bee-channel-app\app\login-modal.tsx", "TypeScript JSX", 0, 0, 21, 0, 1, 22
+"d:\CodeData\Project\bee-channel-app\components\CollectionScreen.tsx", "TypeScript JSX", 0, 0, 111, 0, 8, 119
+"d:\CodeData\Project\bee-channel-app\components\CommonView.tsx", "TypeScript JSX", 0, 0, 87, 0, 6, 93
+"d:\CodeData\Project\bee-channel-app\components\ExtendModal.tsx", "TypeScript JSX", 0, 0, 870, 25, 61, 956
+"d:\CodeData\Project\bee-channel-app\components\ExtendModel.tsx", "TypeScript JSX", 0, 0, -69, 0, -4, -73
+"d:\CodeData\Project\bee-channel-app\components\FlatListComponent.tsx", "TypeScript JSX", 0, 0, 8, 0, 1, 9
+"d:\CodeData\Project\bee-channel-app\components\HomeScreen.tsx", "TypeScript JSX", 0, 0, -21, 0, 1, -20
+"d:\CodeData\Project\bee-channel-app\components\InformationScreen.tsx", "TypeScript JSX", 0, 0, 260, 0, 12, 272
+"d:\CodeData\Project\bee-channel-app\components\LivePage.tsx", "TypeScript JSX", 0, 0, 223, 17, 14, 254
+"d:\CodeData\Project\bee-channel-app\components\SearchScreen.tsx", "TypeScript JSX", 0, 0, 8, 0, 0, 8
+"d:\CodeData\Project\bee-channel-app\components\SubscriptionScreen.tsx", "TypeScript JSX", 0, 0, 38, 0, 0, 38
+"d:\CodeData\Project\bee-channel-app\components\UserScreen.tsx", "TypeScript JSX", 0, 0, 51, 1, 1, 53
+"d:\CodeData\Project\bee-channel-app\components\VideoAssembly.tsx", "TypeScript JSX", 0, 0, 232, 0, 10, 242
+"d:\CodeData\Project\bee-channel-app\components\VideoPage.tsx", "TypeScript JSX", 0, 0, 8, -2, 0, 6
+"d:\CodeData\Project\bee-channel-app\components\useWebSocket.ts", "TypeScript", 0, 26, 0, 0, 5, 31
+"d:\CodeData\Project\bee-channel-app\package.json", "JSON", 2, 0, 0, 0, 0, 2
+"d:\CodeData\Project\bee-channel-app\store\hook.ts", "TypeScript", 0, 6, 0, 0, -1, 5
+"d:\CodeData\Project\bee-channel-app\store\index.ts", "TypeScript", 0, 2, 0, 0, 0, 2
+"d:\CodeData\Project\bee-channel-app\store\slices\appSlice.ts", "TypeScript", 0, 5, 0, 0, 0, 5
+"d:\CodeData\Project\bee-channel-app\store\slices\liveSlice.ts", "TypeScript", 0, 38, 0, 0, 6, 44
+"d:\CodeData\Project\bee-channel-app\utils\common\fetchUtil.ts", "TypeScript", 0, 16, 0, 0, 2, 18
+"d:\CodeData\Project\bee-channel-app\utils\common\tokenUtils.ts", "TypeScript", 0, 2, 0, 0, 1, 3
+"Total", "-", 2, 136, 2124, 43, 152, 2457

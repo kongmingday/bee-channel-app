@@ -26,8 +26,8 @@ import { Avatar } from '@rneui/themed';
 import { BlurView } from 'expo-blur';
 import { secondBgColor } from '@/constants/Colors';
 import { Feather } from '@expo/vector-icons';
-import { Comment, SimpleMedia } from '@/.expo/types/media';
-import { PATH_CONSTANTS } from '@/.expo/types/constant';
+import { Comment, SimpleMedia } from '@/constants/media';
+import { PATH_CONSTANTS } from '@/constants/constant';
 import { calculateDuration, convertNumber } from '@/utils/common/calculateUtil';
 import { useAppDispatch, useAppSelector, useFetchDataPage } from '@/store/hook';
 import {
@@ -36,7 +36,7 @@ import {
 	getChildrenComment,
 	favoriteAction,
 } from '@/api/media';
-import { DeriveType, FavoriteType } from '@/.expo/types/enum';
+import { DeriveType, FavoriteType } from '@/constants/enum';
 import {
 	changeMainInputRef,
 	changeParentId,
@@ -51,6 +51,7 @@ import { subscribeAction } from '@/api/user';
 import { favoriteDataPackaging } from '@/utils/common/calculateUtil';
 import { AddCollectionDialog } from './ExtendModal';
 import { RecommendVideoList } from './VideoAssembly';
+import { handleShowToast } from '@/store/assembly/appAssembly';
 
 export const VideoPageDetail = (props: {
 	videoInfo?: SimpleMedia;
@@ -59,20 +60,25 @@ export const VideoPageDetail = (props: {
 	const [isOpen, setOpenState] = useState(false);
 	const [isDialogVisible, setDialogState] = useState<boolean>(false);
 	const { videoInfo, setVideoInfo } = props;
+	const dispatch = useAppDispatch();
 
 	const handleSubscribeChange = () => {
 		videoInfo &&
-			subscribeAction(videoInfo?.authorId).then(response => {
-				if (response.result) {
-					setVideoInfo({
-						...videoInfo,
-						author: {
-							...videoInfo.author,
-							hasConcern: !videoInfo.author.hasConcern,
-						},
-					});
-				}
-			});
+			subscribeAction(videoInfo?.authorId)
+				.then(response => {
+					if (response.result) {
+						setVideoInfo({
+							...videoInfo,
+							author: {
+								...videoInfo.author,
+								hasConcern: !videoInfo.author.hasConcern,
+							},
+						});
+					}
+				})
+				.catch(() => {
+					handleShowToast(dispatch, 'Pleas login first');
+				});
 	};
 
 	const handleFavoriteChange = (favoriteType: FavoriteType) => {
@@ -433,12 +439,16 @@ export const VideoPageComment = (props: {
 			content: input,
 			userToId: userToId,
 			parentId: parentId,
-		}).then(res => {
-			if (res.result) {
-				refreshPage();
-				inputRef.current?.clear();
-			}
-		});
+		})
+			.then(res => {
+				if (res.result) {
+					refreshPage();
+					inputRef.current?.clear();
+				}
+			})
+			.catch(() => {
+				handleShowToast(dispatch, 'Please login first');
+			});
 	};
 
 	const handleSortedChange = () => {

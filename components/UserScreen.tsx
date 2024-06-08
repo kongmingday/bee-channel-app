@@ -20,8 +20,8 @@ import {
 	getLikedVideoPage,
 	getWatchLaterVideoPage,
 } from '@/api/media';
-import { SimpleMedia } from '@/.expo/types/media';
-import { PATH_CONSTANTS } from '@/.expo/types/constant';
+import { SimpleMedia } from '@/constants/media';
+import { PATH_CONSTANTS } from '@/constants/constant';
 import {
 	FetchDataPageReturn,
 	useAppDispatch,
@@ -246,6 +246,7 @@ export const UserTabActionArea = () => {
 			onPress: () => {
 				removeUserInfo();
 				removeAuthToken();
+				router.replace('/(tabs)/');
 			},
 		},
 	];

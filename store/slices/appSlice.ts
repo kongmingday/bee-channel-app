@@ -1,4 +1,4 @@
-import { AllUserInfo } from '@/.expo/types/auth';
+import { AllUserInfo } from '@/constants/auth';
 import { createSlice } from '@reduxjs/toolkit';
 
 // Define a type for the slice state

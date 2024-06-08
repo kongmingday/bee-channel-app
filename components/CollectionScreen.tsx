@@ -1,4 +1,4 @@
-import { PlayList, SimpleMedia } from '@/.expo/types/media';
+import { PlayList, SimpleMedia } from '@/constants/media';
 import { ListItem } from '@rneui/base';
 import { TransparentView, Text, IonIcon, FeatherIcon } from './Themed';
 import { useEffect, useState } from 'react';

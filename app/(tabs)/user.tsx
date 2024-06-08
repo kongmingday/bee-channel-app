@@ -5,9 +5,9 @@ import { SelectionArea, UserTabActionArea } from '@/components/UserScreen';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { getUserInfo } from '@/api/user';
-import { useCallback, useState } from 'react';
-import { UserInfo } from '@/.expo/types/auth';
-import { PATH_CONSTANTS } from '@/.expo/types/constant';
+import { useCallback, useEffect, useState } from 'react';
+import { UserInfo } from '@/constants/auth';
+import { PATH_CONSTANTS } from '@/constants/constant';
 import { useWindowDimensions } from 'react-native';
 import { useAppDispatch } from '@/store/hook';
 import { changeUserInfo } from '@/store/slices/appSlice';
@@ -31,7 +31,11 @@ const UserInfoScreen = (props: { userInfo?: UserInfo }) => {
 					style={{ gap: 16 }}>
 					<Image
 						className='w-16 h-16 rounded-full'
-						source={`${PATH_CONSTANTS}${userInfo?.profile}`}
+						source={
+							userInfo?.profile
+								? `${PATH_CONSTANTS}${userInfo?.profile}`
+								: require('@/assets/images/logo.png')
+						}
 					/>
 					<TransparentView>
 						<Text className='text-xl'>{userInfo?.username}</Text>
@@ -84,7 +88,11 @@ export default function UserScreen() {
 				width,
 				height: height,
 			}}>
-			{userInfo ? <UserInfoScreen userInfo={userInfo} /> : <LoginScreen />}
+			{userInfo.username ? (
+				<UserInfoScreen userInfo={userInfo} />
+			) : (
+				<LoginScreen />
+			)}
 		</TransparentView>
 	);
 }

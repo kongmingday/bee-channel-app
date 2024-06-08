@@ -2,8 +2,8 @@ import { getAuthorVideoList } from '@/api/media';
 import { SimpleVideoList } from '@/components/VideoAssembly';
 import { useAppSelector, useFetchDataPage } from '@/store/hook';
 import { NotTabView } from '@/components/CommonView';
-import { SimpleMedia } from '@/.expo/types/media';
-import { UserAndRelationship } from '@/.expo/types/auth';
+import { SimpleMedia } from '@/constants/media';
+import { UserAndRelationship } from '@/constants/auth';
 import { Text } from '@/components/Themed';
 
 export default function VideosScreen() {

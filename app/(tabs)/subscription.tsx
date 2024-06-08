@@ -6,7 +6,7 @@ import {
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useAppDispatch } from '@/store/hook';
 import { useCallback, useState } from 'react';
-import { UserInfo } from '@/.expo/types/auth';
+import { UserInfo } from '@/constants/auth';
 import { useFocusEffect } from 'expo-router';
 import { getUserInfo } from '@/api/user';
 import { changeUserInfo } from '@/store/slices/appSlice';
@@ -33,13 +33,12 @@ export default function SubscriptionScreen() {
 
 	return (
 		<TransparentView className='flex-1 bg-transparent'>
-			{userInfo ? (
+			{userInfo.id ? (
 				<BackgroundView
 					className='flex-1 px-4 pt-4'
 					style={{
 						paddingBottom: tabBarHeight,
 					}}>
-					{/* <Text className='text-xl my-4'>Subscription</Text> */}
 					<SubscriptionAuthorList />
 					<SubscriptionVideoList />
 				</BackgroundView>

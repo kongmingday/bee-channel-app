@@ -1,7 +1,7 @@
-import { TransparentView, PressableIcon } from '@/components/Themed';
+import { TransparentView, PressableIcon, Text } from '@/components/Themed';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import VideoPlayer from 'expo-video-player';
-import { ResizeMode } from 'expo-av';
+import { AVPlaybackStatus, AVPlaybackStatusSuccess, ResizeMode } from 'expo-av';
 import { useEffect, useRef, useState } from 'react';
 import { setStatusBarHidden } from 'expo-status-bar';
 import { Video } from 'expo-av';
@@ -10,9 +10,9 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Tab, TabView } from '@rneui/themed';
 import { VideoPageComment, VideoPageDetail } from '@/components/VideoPage';
 import { secondaryColor, ignoreTextColor } from '@/constants/Colors';
-import { PATH_CONSTANTS } from '@/.expo/types/constant';
-import { getVideoInfo } from '@/api/media';
-import { SimpleMedia } from '@/.expo/types/media';
+import { PATH_CONSTANTS } from '@/constants/constant';
+import { getVideoInfo, historyProcess } from '@/api/media';
+import { SimpleMedia } from '@/constants/media';
 import { ExtendModal } from '@/components/ExtendModal';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useDispatch } from 'react-redux';
@@ -27,8 +27,22 @@ export default function VideoPlayScreen() {
 	const videoRef = useRef<Video>(new Video({}));
 	const [videoInfo, setVideoInfo] = useState<SimpleMedia>();
 	const modalRef = useRef<BottomSheetModal>(null);
+	const [pausePoint, setPausePoint] = useState(0);
 
 	const dispatch = useDispatch();
+	const onPlayCallback = (status: AVPlaybackStatus) => {
+		if (!status.isLoaded && pausePoint !== 0) {
+			historyProcess({
+				videoId: videoId as string,
+				duration: '0',
+				pausePoint: pausePoint.toString(),
+			});
+		}
+
+		if (!(status as AVPlaybackStatusSuccess).isPlaying) {
+			setPausePoint((status as AVPlaybackStatusSuccess).positionMillis / 1000);
+		}
+	};
 
 	useEffect(() => {
 		const fetchVideoInfo = async () => {
@@ -43,15 +57,16 @@ export default function VideoPlayScreen() {
 			<VideoPlayer
 				videoProps={{
 					shouldPlay: false,
-					resizeMode: ResizeMode.CONTAIN,
+					resizeMode: ResizeMode.COVER,
 					source: {
 						uri: `${PATH_CONSTANTS}${videoInfo?.savePath}`,
 					},
 					ref: videoRef,
 				}}
+				defaultControlsVisible
 				header={
 					<TransparentView
-						className='w-full'
+						className='w-full flex-row items-center'
 						style={{
 							backgroundColor: 'rgba(0,0,0,0.5)',
 						}}>
@@ -63,13 +78,23 @@ export default function VideoPlayScreen() {
 								router.back();
 							}}
 						/>
+						<Text
+							style={{
+								paddingLeft: 10,
+							}}
+							numberOfLines={1}
+							lightColor='#fff'
+							darkColor='#fff'>
+							{videoInfo?.title}
+						</Text>
 					</TransparentView>
 				}
+				playbackCallback={onPlayCallback}
 				fullscreen={{
 					inFullscreen: inFullscreen,
 					enterFullscreen: async () => {
 						setStatusBarHidden(true, 'fade');
-						setInFullscreen(!inFullscreen);
+						setInFullscreen(true);
 						await ScreenOrientation.lockAsync(
 							ScreenOrientation.OrientationLock.LANDSCAPE_LEFT,
 						);
@@ -79,7 +104,7 @@ export default function VideoPlayScreen() {
 					},
 					exitFullscreen: async () => {
 						setStatusBarHidden(false, 'fade');
-						setInFullscreen(!inFullscreen);
+						setInFullscreen(false);
 						await ScreenOrientation.lockAsync(
 							ScreenOrientation.OrientationLock.PORTRAIT_UP,
 						);

@@ -1,6 +1,9 @@
 import qs from 'qs';
 import { getAuthToken, removeAuthToken, removeUserInfo } from './tokenUtils';
 import { router } from 'expo-router';
+import { Toast } from '@/components/Toast';
+import { HandleShowToast, handleShowToast } from '@/store/assembly/appAssembly';
+import { useAppDispatch } from '@/store/hook';
 
 type HTTP_METHOD = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -66,14 +69,15 @@ export const request = async (
 		})
 		.catch(error => {
 			if (error instanceof SyntaxError) {
-				return 'no response data';
+				// return 'no response data';
 			} else if (error instanceof AuthenticationError) {
-				removeAuthToken();
-				removeUserInfo();
-				router.replace('/login-modal');
+				// removeAuthToken();
+				// removeUserInfo();
+				// router.replace('/login-modal');
+				// return '401';
 			} else {
 				// Toast('server error, please try again', ToastMode.ERROE)
-				return;
+				// return 'other';
 			}
 		});
 	return result;

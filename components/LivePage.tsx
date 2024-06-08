@@ -1,35 +1,32 @@
-import { FlashList } from '@shopify/flash-list';
-import { BaseBlurButton, FeatherIcon, Text, TransparentView } from './Themed';
+import { FlashList } from '@shopify/flash-list'
+import { BaseBlurButton, FeatherIcon, Text, TransparentView } from './Themed'
 
-import 'react-native-gesture-handler';
-import 'react-native-reanimated';
-import { AnimatePresence, MotiView } from 'moti';
-import { useState, Dispatch, SetStateAction, useRef } from 'react';
-import { Pressable, TextInput } from 'react-native';
-import { Avatar } from '@rneui/themed';
-import { SimpleMedia } from '@/.expo/types/media';
-import { PATH_CONSTANTS } from '@/.expo/types/constant';
-import { favoriteAction } from '@/api/media';
-import { DeriveType, FavoriteType } from '@/.expo/types/enum';
-import { subscribeAction } from '@/api/user';
-import { favoriteDataPackaging } from '@/utils/common/calculateUtil';
-import { useWebSocket } from './useWebSocket';
-import { secondBgColor } from '@/constants/Colors';
-import { LiveMessage } from '@/.expo/types/live';
-import { BlurView } from 'expo-blur';
-import { useAppSelector } from '@/store/hook';
-import { useLocalSearchParams } from 'expo-router';
+import 'react-native-gesture-handler'
+import 'react-native-reanimated'
+import { AnimatePresence, MotiView } from 'moti'
+import { useState, Dispatch, SetStateAction, useRef, useCallback } from 'react'
+import { Pressable, TextInput } from 'react-native'
+import { Avatar } from '@rneui/themed'
+import { SimpleMedia } from '@/constants/media'
+import { PATH_CONSTANTS } from '@/constants/constant'
+import { getUserFullInfo, subscribeAction } from '@/api/user'
+import { useWebSocket } from './useWebSocket'
+import { secondBgColor } from '@/constants/Colors'
+import { LiveMessage } from '@/constants/live'
+import { BlurView } from 'expo-blur'
+import { useAppSelector } from '@/store/hook'
+import { useFocusEffect, useLocalSearchParams } from 'expo-router'
 
 export const LivePageDetail = (props: {
-	videoInfo?: SimpleMedia;
-	setVideoInfo: Dispatch<SetStateAction<SimpleMedia | undefined>>;
+	videoInfo?: SimpleMedia
+	setVideoInfo: Dispatch<SetStateAction<SimpleMedia | undefined>>
 }) => {
-	const [isOpen, setOpenState] = useState(false);
-	const { videoInfo, setVideoInfo } = props;
+	const [isOpen, setOpenState] = useState(false)
+	const { videoInfo, setVideoInfo } = props
 
 	const handleSubscribeChange = () => {
 		videoInfo &&
-			subscribeAction(videoInfo?.authorId).then(response => {
+			subscribeAction(videoInfo?.authorId).then((response) => {
 				if (response.result) {
 					setVideoInfo({
 						...videoInfo,
@@ -37,10 +34,10 @@ export const LivePageDetail = (props: {
 							...videoInfo.author,
 							hasConcern: !videoInfo.author.hasConcern,
 						},
-					});
+					})
 				}
-			});
-	};
+			})
+	}
 
 	return (
 		<TransparentView
@@ -85,7 +82,7 @@ export const LivePageDetail = (props: {
 					<Text className='text-xl'>{videoInfo?.title}</Text>
 					<Pressable
 						onPress={() => {
-							setOpenState(!isOpen);
+							setOpenState(!isOpen)
 						}}>
 						<FeatherIcon name={`${isOpen ? 'chevron-down' : 'chevron-up'}`} />
 					</Pressable>
@@ -109,14 +106,14 @@ export const LivePageDetail = (props: {
 				</AnimatePresence>
 			</TransparentView>
 		</TransparentView>
-	);
-};
+	)
+}
 
 export const LiveMessageRenderItem = (props: {
-	item: LiveMessage;
-	index: number;
+	item: LiveMessage
+	index: number
 }) => {
-	const { item } = props;
+	const { item } = props
 
 	return (
 		<BlurView
@@ -127,41 +124,41 @@ export const LiveMessageRenderItem = (props: {
 				{item.message}
 			</Text>
 		</BlurView>
-	);
-};
+	)
+}
 
 export const LiveChatContainer = () => {
-	const { liveId } = useLocalSearchParams();
-	const inputRef = useRef<TextInput>(null);
-	const flashListRef = useRef<FlashList<LiveMessage>>(null);
+	const { liveId } = useLocalSearchParams()
+	const inputRef = useRef<TextInput>(null)
+	const flashListRef = useRef<FlashList<LiveMessage>>(null)
 
-	const liveParam = useAppSelector(state => state.live);
-	const [input, setInput] = useState<string>('');
+	const liveParam = useAppSelector((state) => state.live)
+	const [input, setInput] = useState<string>('')
 	const [messageHistory, setMessageHistory] = useState<Partial<LiveMessage>[]>(
 		[],
-	);
+	)
 
 	const handleOnMessage = (event: MessageEvent<any>) => {
-		const message: LiveMessage = JSON.parse(event.data);
+		const message: LiveMessage = JSON.parse(event.data)
 		if (message.system) {
-			return;
+			return
 		}
 		if (message.message && message.message.trim().length > 0) {
-			setMessageHistory(pre => {
-				return [...pre, message];
-			});
+			setMessageHistory((pre) => {
+				return [...pre, message]
+			})
 		}
 		// if (message.amount > 0) {
 		// 	insertToPayMessage(message);
 		// }
-	};
-
+	}
+	console.log(`/${liveParam.roomId}/${liveParam.userId}`)
 	const [webSocket] = useWebSocket(
-		`/006774/1`,
+		`/${liveParam.roomId}/${liveParam.userId}`,
 		() => {},
 		handleOnMessage,
 		() => {},
-	);
+	)
 
 	// const insertToPayMessage = (data: LiveMessage) => {
 	// 	let targetIndex = payHistory.length;
@@ -180,7 +177,7 @@ export const LiveChatContainer = () => {
 
 	const handleCommit = async () => {
 		if (input.length <= 0) {
-			return;
+			return
 		}
 		const liveMessage = {
 			userId: liveParam.userId,
@@ -189,10 +186,10 @@ export const LiveChatContainer = () => {
 			roomId: liveId,
 			message: input,
 			system: false,
-		};
-		webSocket?.send(JSON.stringify(liveMessage));
-		inputRef.current?.clear();
-	};
+		}
+		webSocket?.send(JSON.stringify(liveMessage))
+		inputRef.current?.clear()
+	}
 
 	return (
 		<BlurView
@@ -220,7 +217,7 @@ export const LiveChatContainer = () => {
 					}}
 					title='Commit'
 					onPress={() => {
-						handleCommit();
+						handleCommit()
 					}}
 				/>
 			</TransparentView>
@@ -231,11 +228,11 @@ export const LiveChatContainer = () => {
 					showsHorizontalScrollIndicator={false}
 					showsVerticalScrollIndicator={false}
 					ItemSeparatorComponent={() => {
-						return <TransparentView className='h-4' />;
+						return <TransparentView className='h-4' />
 					}}
 					data={messageHistory as LiveMessage[]}
 					keyExtractor={(item: LiveMessage, index) => {
-						return index + item.userId + item.username;
+						return index + item.userId + item.username
 					}}
 					renderItem={({ item, index }) => {
 						return (
@@ -243,11 +240,11 @@ export const LiveChatContainer = () => {
 								item={item}
 								index={index}
 							/>
-						);
+						)
 					}}
 					estimatedItemSize={175}
 				/>
 			</TransparentView>
 		</BlurView>
-	);
-};
+	)
+}

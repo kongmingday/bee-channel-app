@@ -19,6 +19,10 @@ import { Provider } from 'react-redux';
 import { store } from '@/store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BackgroundView } from '@/components/CommonView';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 export {
 	// Catch any errors thrown by the Layout component.

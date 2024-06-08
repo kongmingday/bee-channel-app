@@ -28,7 +28,7 @@ import {
 import { dateFormat } from '@/utils/common/calculateUtil';
 import { uploadSingleFile, uploadUserInfo } from '@/api/user';
 import { router } from 'expo-router';
-import { UploadUserInfo } from '@/.expo/types/auth';
+import { UploadUserInfo } from '@/constants/auth';
 import * as ImagePicker from 'expo-image-picker';
 import { Avatar, Dialog } from '@rneui/themed';
 import { Platform, TextInput } from 'react-native';
@@ -42,11 +42,14 @@ import {
 	updatePlayList,
 	updateVideoInPlayList,
 } from '@/api/media';
-import { useAppSelector } from '@/store/hook';
-import { PlayList, PlayVideoList } from '@/.expo/types/media';
+import { useAppDispatch, useAppSelector } from '@/store/hook';
+import { PlayList, PlayVideoList } from '@/constants/media';
 import { BackgroundView } from './CommonView';
 import { handleShowToast } from '@/store/assembly/appAssembly';
 import { useDispatch } from 'react-redux';
+import { Dispatch as DispatchRedux } from '@reduxjs/toolkit';
+import { sendCodeToEmail, verify } from '@/api/checkcode';
+import { VERIFY_KEY } from '@/constants/constant';
 
 export const ExtendModal = forwardRef(
 	(
@@ -174,16 +177,20 @@ export const ExtendBottomSheet = forwardRef(
 	},
 );
 
-const updateUserInfo = (date: UploadUserInfo) => {
+const updateUserInfo = (date: UploadUserInfo, dispatch: DispatchRedux) => {
 	uploadUserInfo(date).then(response => {
 		const { result } = response;
 		if (result) {
+			handleShowToast(dispatch, 'update successfully');
 			router.replace('/(no-direct)/personal/information');
+		} else {
+			handleShowToast(dispatch, 'update failed');
 		}
 	});
 };
 
 export const NewNameBottomSheet = () => {
+	const dispatch = useAppDispatch();
 	const [username, setUsername] = useState<string>('');
 
 	return (
@@ -217,7 +224,7 @@ export const NewNameBottomSheet = () => {
 					}}
 					onPress={() => {
 						if (username.length > 0) {
-							updateUserInfo({ username });
+							updateUserInfo({ username }, dispatch);
 						}
 					}}>
 					<Text>Save</Text>
@@ -301,6 +308,7 @@ export const ChangeProfileBottomSheet = (props: { profile: string }) => {
 
 export const ChangeGenderBottomSheet = (props: { gender: number }) => {
 	const genderList = ['Female', 'Male', 'Private'];
+	const dispatch = useAppDispatch();
 	const [selectedIndex, setSelectedIndex] = useState<number>(props.gender);
 
 	return (
@@ -332,7 +340,7 @@ export const ChangeGenderBottomSheet = (props: { gender: number }) => {
 					}}
 					onPress={() => {
 						if (selectedIndex !== props.gender) {
-							updateUserInfo({ gender: selectedIndex });
+							updateUserInfo({ gender: selectedIndex }, dispatch);
 						}
 					}}>
 					<Text>Save</Text>
@@ -344,6 +352,7 @@ export const ChangeGenderBottomSheet = (props: { gender: number }) => {
 
 export const ChangeBirthdayBottomSheet = (props: { birthday: string }) => {
 	// const [pickerShow, setShowState] = useState<boolean>(false);
+	const dispatch = useAppDispatch();
 	const [birthday, setBirthday] = useState<Date>(new Date(props.birthday));
 
 	// const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
@@ -412,9 +421,12 @@ export const ChangeBirthdayBottomSheet = (props: { birthday: string }) => {
 					}}
 					onPress={() => {
 						if (birthday !== new Date(props.birthday)) {
-							updateUserInfo({
-								birthday: dateFormat(birthday, 'YYYY-MM-DD hh:mm:ss'),
-							});
+							updateUserInfo(
+								{
+									birthday: dateFormat(birthday, 'YYYY-MM-DD hh:mm:ss'),
+								},
+								dispatch,
+							);
 						}
 					}}>
 					<Text>Save</Text>
@@ -427,6 +439,7 @@ export const ChangeBirthdayBottomSheet = (props: { birthday: string }) => {
 export const ChangeIntroductionBottomSheet = (props: {
 	introduction: string;
 }) => {
+	const dispatch = useAppDispatch();
 	const [introduction, setIntroduction] = useState<string>(props.introduction);
 
 	return (
@@ -465,9 +478,99 @@ export const ChangeIntroductionBottomSheet = (props: {
 							introduction.length > 0 &&
 							introduction !== props.introduction
 						) {
-							updateUserInfo({ introduction });
+							updateUserInfo({ introduction }, dispatch);
 						}
 					}}>
+					<Text>Save</Text>
+				</BaseBlurButton>
+			</TransparentView>
+		</>
+	);
+};
+
+export const ChangePasswordBottomSheet = (props: { email?: string }) => {
+	const { email } = props;
+
+	const dispatch = useAppDispatch();
+	const [code, setCode] = useState<string>('');
+	const [input, setInputText] = useState<string>('');
+
+	const fetchEmailCode = () => {
+		sendCodeToEmail(email || '');
+	};
+
+	const onSavePress = async () => {
+		const verifyResult = await verify(VERIFY_KEY + email, code);
+		if (!verifyResult) {
+			handleShowToast(dispatch, 'The verify code has error.');
+			return;
+		}
+		if (input.length > 0 && input.length < 50) {
+			updateUserInfo({ newPassword: input }, dispatch);
+		}
+	};
+
+	return (
+		<>
+			<TransparentView
+				className='px-10 flex-row justify-center items-center'
+				style={{
+					columnGap: 10,
+				}}>
+				<BottomSheetTextInput
+					style={{
+						width: '100%',
+						marginTop: 8,
+						marginBottom: 10,
+						borderRadius: 10,
+						fontSize: 16,
+						lineHeight: 20,
+						padding: 8,
+						backgroundColor: secondBgColor,
+					}}
+					editable
+					maxLength={200}
+					secureTextEntry
+					placeholder='New Password'
+					value={input}
+					onChangeText={setInputText}
+				/>
+			</TransparentView>
+			<TransparentView
+				className='px-10 w-full flex-row justify-center items-center'
+				style={{
+					gap: 12,
+				}}>
+				<BottomSheetTextInput
+					style={{
+						width: '60%',
+						marginTop: 8,
+						marginBottom: 10,
+						borderRadius: 10,
+						fontSize: 16,
+						lineHeight: 20,
+						padding: 8,
+						backgroundColor: secondBgColor,
+					}}
+					editable
+					value={code}
+					onChangeText={setCode}
+					placeholder='Verify Code'
+				/>
+				<BaseBlurButton
+					containerStyle={{
+						flex: 1,
+					}}
+					onPress={fetchEmailCode}>
+					Send
+				</BaseBlurButton>
+			</TransparentView>
+			<TransparentView className='w-full items-center mb-4'>
+				<BaseBlurButton
+					containerStyle={{
+						width: '80%',
+					}}
+					onPress={onSavePress}>
 					<Text>Save</Text>
 				</BaseBlurButton>
 			</TransparentView>

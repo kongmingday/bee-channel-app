@@ -1,10 +1,10 @@
-import { PageParams, SearchParams } from '@/.expo/types/index';
+import { PageParams, SearchParams } from '@/constants/index';
 import {
 	AddHistory,
 	CommitParam,
 	FavoriteParam,
 	PlayVideoList,
-} from '@/.expo/types/media';
+} from '@/constants/media';
 import { del, get, post, put } from '@/utils/common/fetchUtil';
 
 const serviceName = process.env.EXPO_PUBLIC_MEDIA_SERVICE;

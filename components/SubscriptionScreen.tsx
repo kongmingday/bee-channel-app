@@ -10,11 +10,11 @@ import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import { getSubscriptionVideoList } from '@/api/media';
 import { useAppDispatch, useFetchDataPage } from '@/store/hook';
-import { Video } from '@/.expo/types/media';
-import { PATH_CONSTANTS } from '@/.expo/types/constant';
+import { Video } from '@/constants/media';
+import { PATH_CONSTANTS } from '@/constants/constant';
 import { calculateDuration, convertNumber } from '@/utils/common/calculateUtil';
 import { getSubscription } from '@/api/user';
-import { UserInfo } from '@/.expo/types/auth';
+import { UserInfo } from '@/constants/auth';
 import { FlatList } from 'react-native';
 import { changeDeriveId } from '@/store/slices/chatSlice';
 import { LoadingComponent, NoMoreDataComponent } from './FlatListComponent';
@@ -67,7 +67,7 @@ export const SubscriptionAuthorList = () => {
 								key={item.id}
 								className='items-center'
 								onPress={() => {
-									router.push('/(no-direct)/live-play/006774');
+									router.push(`/personal/userInfo/${item.id}`);
 								}}>
 								<Avatar
 									size={55}

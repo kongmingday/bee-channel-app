@@ -50,6 +50,10 @@ function RootLayoutNav() {
 						options={{ headerShown: false }}
 					/>
 					<Stack.Screen
+						name='personal/userInfo/[targetId]'
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
 						name='video-play/[videoId]'
 						options={{ headerShown: false }}
 					/>
